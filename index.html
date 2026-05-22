@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=pl-table-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -64,17 +64,34 @@
         </div>
 
         <section id="panel-table" class="tab-panel active" role="tabpanel">
-          <div class="section-head">
+          <div class="section-head compact-head">
             <div>
               <span class="section-kicker">Standings</span>
-              <h2>Points Table</h2>
+              <h2>League Table</h2>
             </div>
             <p>Top 2 qualify for the Grand Final</p>
           </div>
 
-          <div id="standingsCards" class="standings-cards"></div>
+          <div class="pl-table" aria-label="Goal Diggers Cup league table">
+            <div class="pl-table-head">
+              <span class="pos-head">#</span>
+              <span class="club-head">Club</span>
+              <span>P</span>
+              <span>GD</span>
+              <span>Pts</span>
+            </div>
+            <div id="standingsList" class="pl-table-body">
+              <div class="pl-row finalist"><span>1</span><strong>Meem Police</strong><span>0</span><span>0</span><b>0</b></div>
+              <div class="pl-row finalist"><span>2</span><strong>FC Maavadibe</strong><span>0</span><span>0</span><b>0</b></div>
+              <div class="pl-row"><span>3</span><strong>FC Karaa</strong><span>0</span><span>0</span><b>0</b></div>
+              <div class="pl-row"><span>4</span><strong>Muli Blues</strong><span>0</span><span>0</span><b>0</b></div>
+              <div class="pl-row"><span>5</span><strong>Blackout 5</strong><span>0</span><span>0</span><b>0</b></div>
+              <div class="pl-row"><span>6</span><strong>Triple T</strong><span>0</span><span>0</span><b>0</b></div>
+              <div class="pl-row"><span>7</span><strong>Smashers FC</strong><span>0</span><span>0</span><b>0</b></div>
+            </div>
+          </div>
 
-          <div class="table-wrap">
+          <div class="table-wrap desktop-table">
             <table>
               <thead>
                 <tr>
@@ -94,7 +111,7 @@
         </section>
 
         <section id="panel-matches" class="tab-panel" role="tabpanel">
-          <div class="section-head">
+          <div class="section-head compact-head">
             <div>
               <span class="section-kicker">Fixtures</span>
               <h2>Match Centre</h2>
@@ -126,6 +143,6 @@
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=pl-table-1"></script>
 </body>
 </html>
