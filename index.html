@@ -10,13 +10,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="clean.css?v=clean-league-2" />
   <link rel="stylesheet" href="hero-image.css?v=hero-1" />
+  <link rel="stylesheet" href="logos.css?v=logos-1" />
 </head>
 <body>
   <div class="app-shell">
     <header class="site-header">
       <nav class="top-nav">
         <a class="brand" href="#">
-          <span class="brand-mark">GD</span>
+          <img class="brand-logo-image" src="assets/goal-diggers-logo.png" alt="Goal Diggers Cup logo" />
           <span><strong>Goal Diggers Cup</strong><small>2026 • M. Muli</small></span>
         </a>
         <button id="shareBtn" class="share-btn">Share</button>
@@ -26,6 +27,10 @@
         <span class="badge">Official Tournament Hub</span>
         <h1>Goal Diggers Cup 2026</h1>
         <p>Fixtures, results, standings and the road to the Grand Final.</p>
+        <div class="hero-organizer">
+          <img src="assets/Society%20logo.PNG" alt="Society of Youth Enhancement logo" />
+          <span>Organized by Society of Youth Enhancement</span>
+        </div>
         <div class="hero-stats">
           <div><span>Teams</span><strong>7</strong></div>
           <div><span>Matches</span><strong>21</strong></div>
@@ -102,7 +107,16 @@
       </section>
     </main>
 
-    <footer>Society of Youth Enhancement • Goal Diggers Cup 2026</footer>
+    <footer class="site-footer">
+      <div class="footer-logos">
+        <img class="footer-logo" src="assets/goal-diggers-logo.png" alt="Goal Diggers Cup logo" />
+        <img class="footer-logo society" src="assets/Society%20logo.PNG" alt="Society of Youth Enhancement logo" />
+      </div>
+      <div class="footer-text">
+        <strong>Goal Diggers Cup 2026</strong>
+        <span>Organized by Society of Youth Enhancement</span>
+      </div>
+    </footer>
   </div>
 
   <script src="clean.js?v=clean-league-2"></script>
