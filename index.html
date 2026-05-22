@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=pl-table-1" />
+  <link rel="stylesheet" href="styles.css?v=pl-table-2" />
 </head>
 <body>
   <div class="app-shell">
@@ -16,70 +16,28 @@
       <nav class="nav">
         <a class="brand" href="#top" aria-label="Goal Diggers Cup home">
           <span class="brand-logo">GD</span>
-          <span>
-            <strong>Goal Diggers Cup</strong>
-            <small>2026 • M. Muli</small>
-          </span>
+          <span><strong>Goal Diggers Cup</strong><small>2026 • M. Muli</small></span>
         </a>
         <button id="shareBtn" class="share-btn">Share</button>
       </nav>
-
       <section class="hero-card">
-        <div class="hero-main">
-          <span class="live-badge">Official Tournament Hub</span>
-          <h1>Goal Diggers Cup 2026</h1>
-          <p>Fixtures, results, standings and the road to the Grand Final — updated for fans.</p>
-        </div>
-
-        <div class="hero-stats">
-          <div><span>Teams</span><strong>7</strong></div>
-          <div><span>Matches</span><strong>21</strong></div>
-          <div><span>Finalists</span><strong>Top 2</strong></div>
-        </div>
+        <div class="hero-main"><span class="live-badge">Official Tournament Hub</span><h1>Goal Diggers Cup 2026</h1><p>Fixtures, results, standings and the road to the Grand Final — updated for fans.</p></div>
+        <div class="hero-stats"><div><span>Teams</span><strong>7</strong></div><div><span>Matches</span><strong>21</strong></div><div><span>Finalists</span><strong>Top 2</strong></div></div>
       </section>
     </header>
-
     <main>
       <section class="quick-stats" aria-label="Tournament summary">
-        <article>
-          <span>Played</span>
-          <strong id="playedCount">0 / 21</strong>
-        </article>
-        <article>
-          <span>Leader</span>
-          <strong id="leaderName">—</strong>
-          <small id="leaderMeta">Scores pending</small>
-        </article>
-        <article>
-          <span>Next</span>
-          <strong id="nextMatchTitle">Opening Match</strong>
-          <small id="nextMatchMeta">Check matches tab</small>
-        </article>
+        <article><span>Played</span><strong id="playedCount">0 / 21</strong></article>
+        <article><span>Leader</span><strong id="leaderName">—</strong><small id="leaderMeta">Scores pending</small></article>
+        <article><span>Next</span><strong id="nextMatchTitle">Opening Match</strong><small id="nextMatchMeta">Check matches tab</small></article>
       </section>
-
       <section class="content-card">
-        <div class="tabs" role="tablist" aria-label="Tournament sections">
-          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="table">Table</button>
-          <button class="tab-btn" role="tab" aria-selected="false" data-tab="matches">Matches</button>
-        </div>
-
+        <div class="tabs" role="tablist" aria-label="Tournament sections"><button class="tab-btn active" role="tab" aria-selected="true" data-tab="table">Table</button><button class="tab-btn" role="tab" aria-selected="false" data-tab="matches">Matches</button></div>
         <section id="panel-table" class="tab-panel active" role="tabpanel">
-          <div class="section-head compact-head">
-            <div>
-              <span class="section-kicker">Standings</span>
-              <h2>League Table</h2>
-            </div>
-            <p>Top 2 qualify for the Grand Final</p>
-          </div>
-
+          <div class="section-head compact-head"><div><span class="section-kicker">Standings</span><h2>League Table</h2></div><p>Top 2 qualify for the Grand Final</p></div>
+          <div id="standingsCards" hidden></div>
           <div class="pl-table" aria-label="Goal Diggers Cup league table">
-            <div class="pl-table-head">
-              <span class="pos-head">#</span>
-              <span class="club-head">Club</span>
-              <span>P</span>
-              <span>GD</span>
-              <span>Pts</span>
-            </div>
+            <div class="pl-table-head"><span>#</span><span class="club-head">Club</span><span>P</span><span>GD</span><span>Pts</span></div>
             <div id="standingsList" class="pl-table-body">
               <div class="pl-row finalist"><span>1</span><strong>Meem Police</strong><span>0</span><span>0</span><b>0</b></div>
               <div class="pl-row finalist"><span>2</span><strong>FC Maavadibe</strong><span>0</span><span>0</span><b>0</b></div>
@@ -90,59 +48,19 @@
               <div class="pl-row"><span>7</span><strong>Smashers FC</strong><span>0</span><span>0</span><b>0</b></div>
             </div>
           </div>
-
-          <div class="table-wrap desktop-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
-                </tr>
-              </thead>
-              <tbody id="standingsBody"></tbody>
-            </table>
-          </div>
-
-          <div class="rules-row">
-            <span>Win 3</span>
-            <span>Draw 1</span>
-            <span>Loss 0</span>
-            <span>GD → GF</span>
-          </div>
+          <div class="table-wrap desktop-table"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody id="standingsBody"></tbody></table></div>
+          <div class="rules-row"><span>Win 3</span><span>Draw 1</span><span>Loss 0</span><span>GD → GF</span></div>
         </section>
-
         <section id="panel-matches" class="tab-panel" role="tabpanel">
-          <div class="section-head compact-head">
-            <div>
-              <span class="section-kicker">Fixtures</span>
-              <h2>Match Centre</h2>
-            </div>
-            <p>Scores will sync from the organizer sheet later</p>
-          </div>
-
-          <div class="filter-row">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="upcoming">Upcoming</button>
-            <button class="filter-btn" data-filter="completed">Completed</button>
-          </div>
-
+          <div class="section-head compact-head"><div><span class="section-kicker">Fixtures</span><h2>Match Centre</h2></div><p>Scores will sync from the organizer sheet later</p></div>
+          <div class="filter-row"><button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="upcoming">Upcoming</button><button class="filter-btn" data-filter="completed">Completed</button></div>
           <div id="scheduleList" class="schedule-list"></div>
         </section>
       </section>
-
-      <section id="adminPanel" class="admin-panel" hidden>
-        <div>
-          <strong>Admin preview mode</strong>
-          <p>Temporary local score entry. Later this will be replaced by Google Sheet sync.</p>
-        </div>
-        <button id="resetBtn" class="share-btn danger">Reset</button>
-      </section>
+      <section id="adminPanel" class="admin-panel" hidden><div><strong>Admin preview mode</strong><p>Temporary local score entry. Later this will be replaced by Google Sheet sync.</p></div><button id="resetBtn" class="share-btn danger">Reset</button></section>
     </main>
-
-    <footer>
-      <p>Society of Youth Enhancement • Goal Diggers Cup 2026</p>
-    </footer>
+    <footer><p>Society of Youth Enhancement • Goal Diggers Cup 2026</p></footer>
   </div>
-
-  <script src="script.js?v=pl-table-1"></script>
+  <script src="script.js?v=pl-table-2"></script>
 </body>
 </html>
