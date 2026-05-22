@@ -21,14 +21,14 @@ const matches=[
 {id:19,day:"Day 2 — Thursday, 28 May 2026",round:"Round 7",time:"23:30 – 23:45",home:"Meem Police",away:"FC Maavadibe"},
 {id:20,day:"Day 2 — Thursday, 28 May 2026",round:"Round 7",time:"23:50 – 00:05",home:"Muli Blues",away:"Smashers FC"},
 {id:21,day:"Day 2 — Thursday, 28 May 2026",round:"Round 7",time:"00:10 – 00:25",home:"Blackout 5",away:"Triple T"},
-{id:22,day:"Grand Final — Thursday, 28 May 2026",round:"Grand Final",time:"After league stage",home:"1st Place",away:"2nd Place",isFinal:true}
+{id:22,day:"Grand Final — Friday, 29 May 2026",round:"Grand Final",time:"After league stage",home:"1st Place",away:"2nd Place",isFinal:true}
 ];
 const leagueMatches=matches.filter(m=>!m.isFinal);
 const key="goal-diggers-cup-2026-scores";const admin=new URLSearchParams(location.search).get("admin")==="1";let activeFilter="all";
 function scores(){try{return JSON.parse(localStorage.getItem(key))||{}}catch{return{}}}
 function num(v){if(v===""||v==null)return null;const n=Number(v);return Number.isFinite(n)&&n>=0?n:null}
 function initials(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase().replace("5","5")}
-function dayDate(m){return m.day.includes("28 May")?"2026-05-28":"2026-05-27"}
+function dayDate(m){return m.day.includes("28 May")?"2026-05-28":m.day.includes("29 May")?"2026-05-29":"2026-05-27"}
 function matchTimes(m){if(!m.time.includes("–"))return null;const [startRaw,endRaw]=m.time.split("–").map(x=>x.trim());let startDate=dayDate(m),endDate=dayDate(m);const [sh,sm]=startRaw.split(":").map(Number),[eh,em]=endRaw.split(":").map(Number);if(!Number.isFinite(sh)||!Number.isFinite(sm)||!Number.isFinite(eh)||!Number.isFinite(em))return null;if(eh<sh||(eh===sh&&em<sm)){const d=new Date(`${endDate}T00:00:00+05:00`);d.setDate(d.getDate()+1);endDate=d.toISOString().slice(0,10)}return{start:new Date(`${startDate}T${startRaw}:00+05:00`),end:new Date(`${endDate}T${endRaw}:00+05:00`)}}
 function clock(ms){const total=Math.max(0,Math.ceil(ms/1000));const m=String(Math.floor(total/60)).padStart(2,"0");const s=String(total%60).padStart(2,"0");return`${m}:${s}`}
 function liveTimer(m){const t=matchTimes(m);if(!t)return"Live";const now=new Date();return`${clock(t.end-now)} left`}
