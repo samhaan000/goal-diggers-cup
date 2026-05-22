@@ -11,10 +11,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="clean.css?v=clean-league-12" />
+  <link rel="stylesheet" href="clean.css?v=clean-league-13" />
   <link rel="stylesheet" href="hero-image.css?v=hero-text-bigger-1" />
   <link rel="stylesheet" href="logos.css?v=logos-11" />
-  <link rel="stylesheet" href="qualification.css?v=qualification-1" />
+  <link rel="stylesheet" href="qualification.css?v=qualification-2" />
 </head>
 <body>
   <div class="app-shell">
@@ -40,8 +40,7 @@
     </header>
 
     <main>
-      <section class="quick-stats">
-        <article><span>Played</span><strong id="playedCount">0 / 21</strong></article>
+      <section class="quick-stats compact-quick-stats">
         <article><span>Current Match</span><strong id="currentMatchTitle">No live match</strong><small id="currentMatchMeta">Check next match below</small></article>
         <article><span>Next Match</span><strong id="nextMatchTitle">Opening Match</strong><small id="nextMatchMeta">Check matches tab</small></article>
       </section>
@@ -57,6 +56,7 @@
             <div>
               <span class="section-kicker">Standings</span>
               <h2>League Table</h2>
+              <div class="played-inline">Matches played <strong id="playedCount">0 / 21</strong></div>
             </div>
             <p>Top 2 qualify for the Grand Final</p>
           </div>
@@ -119,6 +119,6 @@
     </footer>
   </div>
 
-  <script src="clean.js?v=live-timer-1"></script>
+  <script src="clean.js?v=live-timer-2"></script>
 </body>
 </html>
