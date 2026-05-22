@@ -33,8 +33,12 @@ const matches = [
 ];
 
 const storageKey = "goal-diggers-cup-2026-scores";
+const adminMode = new URLSearchParams(window.location.search).get("admin") === "1";
+let activeFilter = "all";
+
 const standingsBody = document.getElementById("standingsBody");
 const scheduleList = document.getElementById("scheduleList");
+const adminPanel = document.getElementById("adminPanel");
 
 function getScores() {
   try {
@@ -52,6 +56,15 @@ function numberOrNull(value) {
   if (value === "" || value === null || value === undefined) return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+}
+
+function getResult(match) {
+  const result = getScores()[match.id];
+  if (!result) return null;
+  const home = numberOrNull(result.home);
+  const away = numberOrNull(result.away);
+  if (home === null || away === null) return null;
+  return { home, away };
 }
 
 function calculateStandings() {
@@ -114,6 +127,20 @@ function renderStandings() {
       <td><strong>${row.points}</strong></td>
     </tr>
   `).join("");
+
+  updateSummary(standings);
+}
+
+function updateSummary(standings) {
+  const completed = matches.filter(match => getResult(match)).length;
+  const next = matches.find(match => !getResult(match));
+  const leader = standings[0];
+
+  document.getElementById("playedCount").textContent = `${completed} / ${matches.length}`;
+  document.getElementById("leaderName").textContent = completed ? leader.team : "—";
+  document.getElementById("leaderMeta").textContent = completed ? `${leader.points} pts • GD ${leader.gd > 0 ? "+" : ""}${leader.gd}` : "Table updates after scores are entered.";
+  document.getElementById("nextMatchTitle").textContent = next ? `${next.home} vs ${next.away}` : "League complete";
+  document.getElementById("nextMatchMeta").textContent = next ? `${next.day.replace(" — ", ", ")} • ${next.time}` : "Top 2 move to the Grand Final.";
 }
 
 function renderSchedule() {
@@ -123,6 +150,12 @@ function renderSchedule() {
   let html = "";
 
   matches.forEach(match => {
+    const result = scores[match.id] || {};
+    const homeScore = numberOrNull(result.home);
+    const awayScore = numberOrNull(result.away);
+    const completed = homeScore !== null && awayScore !== null;
+    const shouldHide = activeFilter === "completed" && !completed || activeFilter === "upcoming" && completed;
+
     if (match.day !== currentDay) {
       currentDay = match.day;
       currentRound = "";
@@ -133,17 +166,21 @@ function renderSchedule() {
       html += `<div class="round-title">${match.round}</div>`;
     }
 
-    const result = scores[match.id] || {};
+    const scoreMarkup = adminMode ? `
+      <div class="admin-fields">
+        <input class="score-input" type="number" min="0" inputmode="numeric" aria-label="${match.home} score" data-match="${match.id}" data-side="home" value="${result.home ?? ""}">
+        <span class="score-dash">-</span>
+        <input class="score-input" type="number" min="0" inputmode="numeric" aria-label="${match.away} score" data-match="${match.id}" data-side="away" value="${result.away ?? ""}">
+      </div>
+    ` : `<div class="score-display">${completed ? `${homeScore} - ${awayScore}` : "vs"}</div>`;
+
     html += `
-      <article class="match-card" data-id="${match.id}">
+      <article class="match-card ${shouldHide ? "hidden" : ""}" data-id="${match.id}" data-status="${completed ? "completed" : "upcoming"}">
         <div class="match-meta">#${match.id}<br>${match.time}</div>
         <div class="team-name">${match.home}</div>
-        <div class="score-box">
-          <input class="score-input" type="number" min="0" inputmode="numeric" aria-label="${match.home} score" data-match="${match.id}" data-side="home" value="${result.home ?? ""}">
-          <span class="score-dash">-</span>
-          <input class="score-input" type="number" min="0" inputmode="numeric" aria-label="${match.away} score" data-match="${match.id}" data-side="away" value="${result.away ?? ""}">
-        </div>
+        ${scoreMarkup}
         <div class="team-name team-away">${match.away}</div>
+        <div class="status-pill ${completed ? "completed" : ""}">${completed ? "FT" : "Upcoming"}</div>
       </article>
     `;
   });
@@ -163,18 +200,56 @@ function renderSchedule() {
       }
 
       saveScores(scores);
+      renderSchedule();
       renderStandings();
     });
   });
 }
 
-document.getElementById("resetBtn").addEventListener("click", () => {
-  const confirmed = confirm("Reset all saved scores on this device?");
-  if (!confirmed) return;
-  localStorage.removeItem(storageKey);
-  renderSchedule();
-  renderStandings();
-});
+function setupTabs() {
+  document.querySelectorAll(".tab-btn").forEach(button => {
+    button.addEventListener("click", () => openTab(button.dataset.tab));
+  });
+
+  document.querySelectorAll(".tab-shortcut").forEach(button => {
+    button.addEventListener("click", () => openTab(button.dataset.target, true));
+  });
+}
+
+function openTab(tabName, scrollToTabs = false) {
+  document.querySelectorAll(".tab-btn").forEach(button => {
+    const active = button.dataset.tab === tabName;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", active ? "true" : "false");
+  });
+
+  document.querySelectorAll(".tab-panel").forEach(panel => {
+    panel.classList.toggle("active", panel.id === `panel-${tabName}`);
+  });
+
+  if (scrollToTabs) document.querySelector(".tabs-shell").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function setupFilters() {
+  document.querySelectorAll(".filter-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter;
+      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.toggle("active", btn === button));
+      renderSchedule();
+    });
+  });
+}
+
+const resetBtn = document.getElementById("resetBtn");
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    const confirmed = confirm("Reset all saved scores on this device?");
+    if (!confirmed) return;
+    localStorage.removeItem(storageKey);
+    renderSchedule();
+    renderStandings();
+  });
+}
 
 document.getElementById("shareBtn").addEventListener("click", async () => {
   if (navigator.share) {
@@ -185,5 +260,9 @@ document.getElementById("shareBtn").addEventListener("click", async () => {
   }
 });
 
+if (adminMode && adminPanel) adminPanel.hidden = false;
+
+setupTabs();
+setupFilters();
 renderSchedule();
 renderStandings();
