@@ -37,6 +37,7 @@ const adminMode = new URLSearchParams(window.location.search).get("admin") === "
 let activeFilter = "all";
 
 const standingsBody = document.getElementById("standingsBody");
+const standingsCards = document.getElementById("standingsCards");
 const scheduleList = document.getElementById("scheduleList");
 const adminPanel = document.getElementById("adminPanel");
 
@@ -128,6 +129,17 @@ function renderStandings() {
     </tr>
   `).join("");
 
+  standingsCards.innerHTML = standings.map((row, index) => `
+    <article class="standing-card ${index < 2 ? "top" : ""}">
+      <div class="rank-badge">${index + 1}</div>
+      <div>
+        <div class="card-team">${row.team}</div>
+        <div class="card-record">${row.played}P • ${row.won}W ${row.drawn}D ${row.lost}L • GD ${row.gd > 0 ? "+" : ""}${row.gd}</div>
+      </div>
+      <div class="card-points">${row.points}<span>pts</span></div>
+    </article>
+  `).join("");
+
   updateSummary(standings);
 }
 
@@ -138,9 +150,9 @@ function updateSummary(standings) {
 
   document.getElementById("playedCount").textContent = `${completed} / ${matches.length}`;
   document.getElementById("leaderName").textContent = completed ? leader.team : "—";
-  document.getElementById("leaderMeta").textContent = completed ? `${leader.points} pts • GD ${leader.gd > 0 ? "+" : ""}${leader.gd}` : "Table updates after scores are entered.";
+  document.getElementById("leaderMeta").textContent = completed ? `${leader.points} pts • GD ${leader.gd > 0 ? "+" : ""}${leader.gd}` : "Scores pending";
   document.getElementById("nextMatchTitle").textContent = next ? `${next.home} vs ${next.away}` : "League complete";
-  document.getElementById("nextMatchMeta").textContent = next ? `${next.day.replace(" — ", ", ")} • ${next.time}` : "Top 2 move to the Grand Final.";
+  document.getElementById("nextMatchMeta").textContent = next ? `${next.time} • ${next.round}` : "Top 2 move to final";
 }
 
 function renderSchedule() {
@@ -210,13 +222,9 @@ function setupTabs() {
   document.querySelectorAll(".tab-btn").forEach(button => {
     button.addEventListener("click", () => openTab(button.dataset.tab));
   });
-
-  document.querySelectorAll(".tab-shortcut").forEach(button => {
-    button.addEventListener("click", () => openTab(button.dataset.target, true));
-  });
 }
 
-function openTab(tabName, scrollToTabs = false) {
+function openTab(tabName) {
   document.querySelectorAll(".tab-btn").forEach(button => {
     const active = button.dataset.tab === tabName;
     button.classList.toggle("active", active);
@@ -226,8 +234,6 @@ function openTab(tabName, scrollToTabs = false) {
   document.querySelectorAll(".tab-panel").forEach(panel => {
     panel.classList.toggle("active", panel.id === `panel-${tabName}`);
   });
-
-  if (scrollToTabs) document.querySelector(".tabs-shell").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function setupFilters() {
@@ -243,8 +249,7 @@ function setupFilters() {
 const resetBtn = document.getElementById("resetBtn");
 if (resetBtn) {
   resetBtn.addEventListener("click", () => {
-    const confirmed = confirm("Reset all saved scores on this device?");
-    if (!confirmed) return;
+    if (!confirm("Reset all saved scores on this device?")) return;
     localStorage.removeItem(storageKey);
     renderSchedule();
     renderStandings();
