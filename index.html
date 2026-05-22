@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goal Diggers Cup 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+
+  <header class="hero">
+    <div class="hero__content">
+      <p class="eyebrow">Society of Youth Enhancement presents</p>
+      <h1>Goal Diggers Cup <span>2026</span></h1>
+      <p class="sub">Single Round Robin + Grand Final • M. Muli small-goal football</p>
+      <div class="hero__stats">
+        <div><strong>7</strong><span>Teams</span></div>
+        <div><strong>21</strong><span>League Matches</span></div>
+        <div><strong>15m</strong><span>Match Duration</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel controls-panel">
+      <div>
+        <h2>Match Control</h2>
+        <p>Enter scores after each match. The points table updates automatically and saves on this device.</p>
+      </div>
+      <div class="actions">
+        <button id="resetBtn" class="btn btn-ghost">Reset Scores</button>
+        <button id="shareBtn" class="btn">Share Page</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Live table</p>
+          <h2>Points Table</h2>
+        </div>
+        <p class="note">Top 2 qualify for the Grand Final</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
+            </tr>
+          </thead>
+          <tbody id="standingsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Fixtures</p>
+          <h2>Match Schedule & Results</h2>
+        </div>
+        <p class="note">Win = 3 pts • Draw = 1 pt • Loss = 0 pts</p>
+      </div>
+      <div id="scheduleList" class="schedule-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Goal Diggers Cup 2026 • Society of Youth Enhancement</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
