@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="compact-fixtures.css?v=compact-fixtures-1" />
   <link rel="stylesheet" href="live-watch.css?v=watch-live-1" />
   <link rel="stylesheet" href="sporty-hero.css?v=sporty-hero-1" />
+  <link rel="stylesheet" href="share-table.css?v=share-table-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -48,7 +49,7 @@
 
       <section class="content-card app-content-card">
         <section id="panel-table" class="tab-panel active">
-          <div class="section-head">
+          <div class="section-head table-section-head">
             <div>
               <span class="section-kicker">Standings</span>
               <h2>League Table</h2>
@@ -58,6 +59,7 @@
                 <span>Top 2 qualify for the Grand Final</span>
               </div>
             </div>
+            <button id="shareTableBtn" class="share-table-btn" type="button" aria-label="Share league table as image">Share Table</button>
           </div>
 
           <div class="league-table" aria-label="Goal Diggers Cup league table">
@@ -119,6 +121,10 @@
     <button class="tab-btn bottom-nav-btn" data-tab="matches" type="button" aria-label="Show fixtures">FIXTURES</button>
   </nav>
 
+  <div id="storyShareCanvas" class="story-share-card" aria-hidden="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="clean.js?v=compact-fixtures-1"></script>
+  <script src="share-table.js?v=share-table-1"></script>
 </body>
 </html>
