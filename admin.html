@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=admin-2" />
+  <link rel="stylesheet" href="admin.css?v=admin-3" />
 </head>
 <body>
   <main class="admin-shell">
@@ -44,6 +44,7 @@
         </div>
       </div>
       <button id="saveScoreBtn" class="primary-btn" type="button">Save Score</button>
+      <small class="score-note">Scores can still be corrected after Full Time.</small>
     </section>
 
     <section class="admin-card phase-card">
@@ -57,7 +58,7 @@
         <button data-phase="second_half" type="button">Start 2nd Half</button>
         <button data-phase="fulltime" type="button">Full Time</button>
       </div>
-      <button id="resetPhaseBtn" class="ghost-btn" type="button">Reset Match Status</button>
+      <button id="resetPhaseBtn" class="ghost-btn" type="button">Reset Selected Match Status</button>
     </section>
 
     <section class="admin-card">
@@ -67,12 +68,12 @@
     </section>
 
     <section class="admin-card danger-zone">
-      <button id="resetScoresBtn" class="danger-btn" type="button">Reset Scores + Match Status</button>
+      <button id="resetScoresBtn" class="danger-btn" type="button">Clear Selected Match Score + Status</button>
       <button id="clearAllDataBtn" class="danger-btn danger-btn-strong" type="button">Clear All Match Data</button>
-      <small><strong>Reset Scores + Match Status</strong> clears scores and phases only. <strong>Clear All Match Data</strong> also clears saved live link/settings so you can test fresh before launch.</small>
+      <small><strong>Clear Selected Match Score + Status</strong> only clears the selected match. <strong>Clear All Match Data</strong> clears every score, every status, and saved settings.</small>
     </section>
   </main>
 
-  <script src="admin.js?v=admin-clear-all-1"></script>
+  <script src="admin.js?v=admin-safety-1"></script>
 </body>
 </html>
