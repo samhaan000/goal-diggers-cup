@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=admin-1" />
+  <link rel="stylesheet" href="admin.css?v=admin-2" />
 </head>
 <body>
   <main class="admin-shell">
@@ -67,11 +67,12 @@
     </section>
 
     <section class="admin-card danger-zone">
-      <button id="resetScoresBtn" class="danger-btn" type="button">Reset All Local Scores</button>
-      <small>This first admin version uses browser storage. Later we will connect it to Google Sheets / Apps Script.</small>
+      <button id="resetScoresBtn" class="danger-btn" type="button">Reset Scores + Match Status</button>
+      <button id="clearAllDataBtn" class="danger-btn danger-btn-strong" type="button">Clear All Match Data</button>
+      <small><strong>Reset Scores + Match Status</strong> clears scores and phases only. <strong>Clear All Match Data</strong> also clears saved live link/settings so you can test fresh before launch.</small>
     </section>
   </main>
 
-  <script src="admin.js?v=admin-phase-labels-1"></script>
+  <script src="admin.js?v=admin-clear-all-1"></script>
 </body>
 </html>
