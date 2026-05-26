@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="live-watch.css?v=watch-live-1" />
   <link rel="stylesheet" href="sporty-hero.css?v=sporty-hero-1" />
   <link rel="stylesheet" href="share-table.css?v=share-table-1" />
-  <link rel="stylesheet" href="live-scoreboard.css?v=live-scoreboard-1" />
+  <link rel="stylesheet" href="live-scoreboard.css?v=match-board-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -36,7 +36,19 @@
     </header>
     <main>
       <section class="quick-stats compact-quick-stats">
-        <article class="current-match-card"><span>Current Match</span><strong id="currentMatchTitle">No live match</strong><div id="currentMatchScore" class="current-scoreboard" hidden>0 - 0</div><small id="currentMatchMeta">Check next match below</small><a class="watch-live-btn" href="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" target="_blank" rel="noopener noreferrer" aria-label="Watch live matches on Society for Youth Enhancement YouTube channel"><span class="watch-live-icon">▶</span><span>Watch Live</span></a></article>
+        <article class="current-match-card">
+          <span>Current Match</span>
+          <div id="liveMatchBoard" class="live-match-board" hidden>
+            <div class="live-match-row">
+              <div class="live-team live-team-home"><span id="liveHomeName">Team A</span><img id="liveHomeLogo" src="" alt="" /></div>
+              <div id="currentMatchScore" class="live-score-box">0 - 0</div>
+              <div class="live-team live-team-away"><img id="liveAwayLogo" src="" alt="" /><span id="liveAwayName">Team B</span></div>
+            </div>
+            <div id="currentMatchMeta" class="live-match-status">Upcoming</div>
+          </div>
+          <div id="noLiveMatchState" class="no-live-match-state"><strong id="currentMatchTitle">No live match</strong><small>Check next match below</small></div>
+          <a class="watch-live-btn" href="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" target="_blank" rel="noopener noreferrer" aria-label="Watch live matches on Society for Youth Enhancement YouTube channel"><span class="watch-live-icon">▶</span><span>Watch Live</span></a>
+        </article>
         <article><span>Next Match</span><strong id="nextMatchTitle">Opening Match</strong><small id="nextMatchMeta">Check matches tab</small></article>
       </section>
       <section class="content-card app-content-card">
@@ -56,8 +68,7 @@
   <nav class="bottom-app-nav" aria-label="Goal Diggers Cup navigation"><button class="tab-btn bottom-nav-btn active" data-tab="table" type="button" aria-label="Show league table">TABLE</button><button class="tab-btn bottom-nav-btn" data-tab="matches" type="button" aria-label="Show fixtures">FIXTURES</button></nav>
   <div id="storyShareCanvas" class="story-share-card" aria-hidden="true"></div>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="clean.js?v=live-scoreboard-card-2"></script>
-  <script src="current-scoreboard.js?v=visible-scoreboard-1"></script>
+  <script src="clean.js?v=match-board-1"></script>
   <script src="share-table.js?v=share-table-1"></script>
 </body>
 </html>
