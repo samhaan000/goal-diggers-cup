@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=admin-3" />
+  <link rel="stylesheet" href="admin.css?v=admin-4" />
 </head>
 <body>
   <main class="admin-shell">
@@ -22,6 +22,12 @@
 
     <section class="admin-card">
       <label class="field-label" for="matchSelect">Select Match</label>
+      <div class="admin-tabs" role="tablist" aria-label="Filter matches">
+        <button class="admin-tab active" data-admin-filter="all" type="button">All</button>
+        <button class="admin-tab" data-admin-filter="upcoming" type="button">Upcoming</button>
+        <button class="admin-tab" data-admin-filter="progress" type="button">Live</button>
+        <button class="admin-tab" data-admin-filter="completed" type="button">Completed</button>
+      </div>
       <select id="matchSelect" class="match-select"></select>
       <div id="matchInfo" class="match-info"></div>
     </section>
@@ -74,6 +80,6 @@
     </section>
   </main>
 
-  <script src="admin.js?v=admin-safety-1"></script>
+  <script src="admin.js?v=admin-tabs-1"></script>
 </body>
 </html>
