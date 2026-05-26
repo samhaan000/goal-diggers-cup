@@ -13,3 +13,11 @@ phaseTimer = function(id){
   const ss = String(seconds % 60).padStart(2, "0");
   return `${phaseText(p)} • ${mm}:${ss}`;
 };
+
+// Keep the badge honest: show LIVE NOW only when a match is actually live.
+const originalRenderLiveBoard = renderLiveBoard;
+renderLiveBoard = function(match){
+  originalRenderLiveBoard(match);
+  const label = document.getElementById("currentMatchLabel");
+  if (label) label.textContent = match ? "Live Now" : "Current Match";
+};
