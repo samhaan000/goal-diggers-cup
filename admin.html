@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css?v=admin-5" />
+  <link rel="stylesheet" href="goal-events-admin.css?v=goal-admin-1" />
 </head>
 <body>
   <main class="admin-shell">
@@ -15,7 +16,7 @@
       <div>
         <span class="kicker">Admin Panel</span>
         <h1>Goal Diggers Cup</h1>
-        <p>Control scores, match phase, and live link.</p>
+        <p>Control scores, match phase, scorers, and live link.</p>
       </div>
       <a class="public-link" href="index.html">View Site</a>
     </header>
@@ -50,7 +51,7 @@
         </div>
       </div>
       <button id="saveScoreBtn" class="primary-btn" type="button">Save Score</button>
-      <small class="score-note">Scores can still be corrected after Full Time.</small>
+      <small class="score-note">Tap + to select the scorer. Tap − to remove the latest goal for that side.</small>
     </section>
 
     <section class="admin-card phase-card">
@@ -84,6 +85,8 @@
     </section>
   </main>
 
+  <script src="players.js?v=players-1"></script>
   <script src="admin.js?v=admin-link-tools-1"></script>
+  <script src="goal-events-admin.js?v=goal-admin-1"></script>
 </body>
 </html>
