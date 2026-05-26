@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goal Diggers Cup Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=admin-1" />
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-header">
+      <div>
+        <span class="kicker">Admin Panel</span>
+        <h1>Goal Diggers Cup</h1>
+        <p>Control scores, match phase, and live link.</p>
+      </div>
+      <a class="public-link" href="index.html">View Site</a>
+    </header>
+
+    <section class="admin-card">
+      <label class="field-label" for="matchSelect">Select Match</label>
+      <select id="matchSelect" class="match-select"></select>
+      <div id="matchInfo" class="match-info"></div>
+    </section>
+
+    <section class="admin-card score-card">
+      <div class="team-score-row">
+        <strong id="homeTeam">Team A</strong>
+        <div class="score-controls">
+          <button data-score="home" data-delta="-1" type="button">−</button>
+          <span id="homeScore">0</span>
+          <button data-score="home" data-delta="1" type="button">+</button>
+        </div>
+      </div>
+      <div class="team-score-row">
+        <strong id="awayTeam">Team B</strong>
+        <div class="score-controls">
+          <button data-score="away" data-delta="-1" type="button">−</button>
+          <span id="awayScore">0</span>
+          <button data-score="away" data-delta="1" type="button">+</button>
+        </div>
+      </div>
+      <button id="saveScoreBtn" class="primary-btn" type="button">Save Score</button>
+    </section>
+
+    <section class="admin-card phase-card">
+      <div class="phase-status">
+        <span>Current Phase</span>
+        <strong id="phaseLabel">UPCOMING</strong>
+      </div>
+      <div class="phase-buttons">
+        <button data-phase="first_half" type="button">Start 1H</button>
+        <button data-phase="halftime" type="button">HT</button>
+        <button data-phase="second_half" type="button">Start 2H</button>
+        <button data-phase="fulltime" type="button">FT</button>
+      </div>
+      <button id="resetPhaseBtn" class="ghost-btn" type="button">Reset Match Status</button>
+    </section>
+
+    <section class="admin-card">
+      <label class="field-label" for="youtubeLink">YouTube Live Link</label>
+      <input id="youtubeLink" class="text-input" type="url" value="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" />
+      <button id="saveSettingsBtn" class="primary-btn" type="button">Save Live Link</button>
+    </section>
+
+    <section class="admin-card danger-zone">
+      <button id="resetScoresBtn" class="danger-btn" type="button">Reset All Local Scores</button>
+      <small>This first admin version uses browser storage. Later we will connect it to Google Sheets / Apps Script.</small>
+    </section>
+  </main>
+
+  <script src="admin.js?v=admin-1"></script>
+</body>
+</html>
