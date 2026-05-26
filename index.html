@@ -28,103 +28,34 @@
   <div class="app-shell">
     <header class="site-header">
       <section class="hero-card hero-clean hero-split">
-        <button id="shareBtn" class="share-btn share-icon-btn hero-share-btn" type="button" aria-label="Share Goal Diggers Cup page">
-          <img src="assets/share.svg" alt="" aria-hidden="true" />
-        </button>
-        <div class="hero-logo-panel">
-          <img class="hero-main-logo" src="goal_diggers_3d_gold_logo.webp" alt="Goal Diggers Cup logo" />
-        </div>
-        <div class="hero-copy-panel">
-          <h1>Goal Diggers Cup <span>2026</span></h1>
-          <p>Fixtures. Results. Standings.</p>
-        </div>
+        <button id="shareBtn" class="share-btn share-icon-btn hero-share-btn" type="button" aria-label="Share Goal Diggers Cup page"><img src="assets/share.svg" alt="" aria-hidden="true" /></button>
+        <div class="hero-logo-panel"><img class="hero-main-logo" src="goal_diggers_3d_gold_logo.webp" alt="Goal Diggers Cup logo" /></div>
+        <div class="hero-copy-panel"><h1>Goal Diggers Cup <span>2026</span></h1><p>Fixtures. Results. Standings.</p></div>
       </section>
     </header>
-
     <main>
       <section class="quick-stats compact-quick-stats">
-        <article class="current-match-card"><span>Current Match</span><strong id="currentMatchTitle">No live match</strong><small id="currentMatchMeta">Check next match below</small><a class="watch-live-btn" href="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" target="_blank" rel="noopener noreferrer" aria-label="Watch live matches on Society for Youth Enhancement YouTube channel"><span class="watch-live-icon">▶</span><span>Watch Live</span></a></article>
+        <article class="current-match-card"><span>Current Match</span><strong id="currentMatchTitle">No live match</strong><div id="currentMatchScore" class="current-scoreboard" hidden>0 - 0</div><small id="currentMatchMeta">Check next match below</small><a class="watch-live-btn" href="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" target="_blank" rel="noopener noreferrer" aria-label="Watch live matches on Society for Youth Enhancement YouTube channel"><span class="watch-live-icon">▶</span><span>Watch Live</span></a></article>
         <article><span>Next Match</span><strong id="nextMatchTitle">Opening Match</strong><small id="nextMatchMeta">Check matches tab</small></article>
       </section>
-
       <section class="content-card app-content-card">
         <section id="panel-table" class="tab-panel active">
-          <div class="section-head table-section-head">
-            <div>
-              <span class="section-kicker">Standings</span>
-              <h2>League Table</h2>
-              <div class="table-meta-inline">
-                <span>Matches played <strong id="playedCount">0 / 21</strong></span>
-                <span class="table-meta-divider">|</span>
-                <span>Top 2 qualify for the Grand Final</span>
-              </div>
-            </div>
-            <button id="shareTableBtn" class="share-table-btn" type="button" aria-label="Share league table as image">Share Table</button>
-          </div>
-
-          <div class="league-table" aria-label="Goal Diggers Cup league table">
-            <div class="league-head">
-              <span>Pos</span>
-              <span class="team-label">Team</span>
-              <span>Pl</span>
-              <span>W</span>
-              <span>GD</span>
-              <span>Pts</span>
-            </div>
-            <div id="standingsList" class="league-body">
-              <div class="league-row top-two"><span>1</span><div class="team-cell"><div class="team-badge">MP</div><strong>Meem Police</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-              <div class="league-row top-two"><span>2</span><div class="team-cell"><div class="team-badge">FM</div><strong>FC Maavadibe</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-              <div class="league-row"><span>3</span><div class="team-cell"><div class="team-badge">FK</div><strong>FC Karaa</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-              <div class="league-row"><span>4</span><div class="team-cell"><div class="team-badge">MB</div><strong>Muli Blues</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-              <div class="league-row"><span>5</span><div class="team-cell"><div class="team-badge">B5</div><strong>Blackout 5</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-              <div class="league-row"><span>6</span><div class="team-cell"><div class="team-badge">TT</div><strong>Triple T</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-              <div class="league-row"><span>7</span><div class="team-cell"><div class="team-badge">SF</div><strong>Smashers FC</strong></div><span>0</span><span>0</span><span>0</span><b>0</b></div>
-            </div>
-          </div>
+          <div class="section-head table-section-head"><div><span class="section-kicker">Standings</span><h2>League Table</h2><div class="table-meta-inline"><span>Matches played <strong id="playedCount">0 / 21</strong></span><span class="table-meta-divider">|</span><span>Top 2 qualify for the Grand Final</span></div></div><button id="shareTableBtn" class="share-table-btn" type="button" aria-label="Share league table as image">Share Table</button></div>
+          <div class="league-table" aria-label="Goal Diggers Cup league table"><div class="league-head"><span>Pos</span><span class="team-label">Team</span><span>Pl</span><span>W</span><span>GD</span><span>Pts</span></div><div id="standingsList" class="league-body"></div></div>
         </section>
-
         <section id="panel-matches" class="tab-panel">
-          <div class="section-head">
-            <div>
-              <span class="section-kicker">Fixtures</span>
-              <h2>Match Centre</h2>
-            </div>
-            <p>Scores will sync from the organizer sheet later</p>
-          </div>
-          <div class="filter-row">
-            <button class="filter-btn active" data-filter="all" type="button">All</button>
-            <button class="filter-btn" data-filter="upcoming" type="button">Upcoming</button>
-            <button class="filter-btn" data-filter="completed" type="button">Completed</button>
-          </div>
+          <div class="section-head"><div><span class="section-kicker">Fixtures</span><h2>Match Centre</h2></div><p>Scores sync live from the organizer admin panel</p></div>
+          <div class="filter-row"><button class="filter-btn active" data-filter="all" type="button">All</button><button class="filter-btn" data-filter="upcoming" type="button">Upcoming</button><button class="filter-btn" data-filter="completed" type="button">Completed</button></div>
           <div id="scheduleList" class="schedule-list"></div>
         </section>
       </section>
-
-      <section id="adminPanel" class="admin-panel" hidden>
-        <div><strong>Admin preview mode</strong><p>Temporary local score entry. Later this will be replaced by Google Sheet sync.</p></div>
-        <button id="resetBtn" class="share-btn danger" type="button">Reset</button>
-      </section>
     </main>
-
-    <footer class="site-footer">
-      <div class="footer-logos">
-        <img class="footer-logo society" src="assets/Society%20logo.PNG" alt="Society for Youth Enhancement logo" />
-      </div>
-      <div class="footer-text">
-        <span>Organized by Society for Youth Enhancement</span>
-      </div>
-    </footer>
+    <footer class="site-footer"><div class="footer-logos"><img class="footer-logo society" src="assets/Society%20logo.PNG" alt="Society for Youth Enhancement logo" /></div><div class="footer-text"><span>Organized by Society for Youth Enhancement</span></div></footer>
   </div>
-
-  <nav class="bottom-app-nav" aria-label="Goal Diggers Cup navigation">
-    <button class="tab-btn bottom-nav-btn active" data-tab="table" type="button" aria-label="Show league table">TABLE</button>
-    <button class="tab-btn bottom-nav-btn" data-tab="matches" type="button" aria-label="Show fixtures">FIXTURES</button>
-  </nav>
-
+  <nav class="bottom-app-nav" aria-label="Goal Diggers Cup navigation"><button class="tab-btn bottom-nav-btn active" data-tab="table" type="button" aria-label="Show league table">TABLE</button><button class="tab-btn bottom-nav-btn" data-tab="matches" type="button" aria-label="Show fixtures">FIXTURES</button></nav>
   <div id="storyShareCanvas" class="story-share-card" aria-hidden="true"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="clean.js?v=compact-fixtures-1"></script>
+  <script src="clean.js?v=live-scoreboard-card-1"></script>
   <script src="share-table.js?v=share-table-1"></script>
 </body>
 </html>
