@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=admin-4" />
+  <link rel="stylesheet" href="admin.css?v=admin-5" />
 </head>
 <body>
   <main class="admin-shell">
@@ -69,7 +69,11 @@
 
     <section class="admin-card">
       <label class="field-label" for="youtubeLink">YouTube Live Link</label>
-      <input id="youtubeLink" class="text-input" type="url" value="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" />
+      <div class="link-input-row">
+        <input id="youtubeLink" class="text-input" type="url" value="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" />
+        <button id="pasteLinkBtn" class="small-tool-btn" type="button">Paste</button>
+        <button id="clearLinkBtn" class="small-tool-btn" type="button">Clear</button>
+      </div>
       <button id="saveSettingsBtn" class="primary-btn" type="button">Save Live Link</button>
     </section>
 
@@ -80,6 +84,6 @@
     </section>
   </main>
 
-  <script src="admin.js?v=admin-tabs-1"></script>
+  <script src="admin.js?v=admin-link-tools-1"></script>
 </body>
 </html>
