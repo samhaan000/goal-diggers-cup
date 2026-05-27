@@ -1,6 +1,7 @@
 (() => {
   const STATE_KEY = "goal-diggers-cup-2026-admin-state";
   const SCORE_KEY = "goal-diggers-cup-2026-scores";
+  const SECOND_HALF_START_SECONDS = 6 * 60;
   let timerInterval = null;
 
   const phaseLabels = {
@@ -55,6 +56,11 @@
     return Math.max(0, Math.round((Number(raw) || 0) * 60));
   }
 
+  function defaultStartSecondsForPhase(phase, st) {
+    if (phase === "second_half") return SECOND_HALF_START_SECONDS;
+    return Number(st.timerOffsetSeconds || 0);
+  }
+
   function elapsedFor(st) {
     const offset = Number(st.timerOffsetSeconds || 0);
     if (!st.phaseStartedAt || st.timerPaused) return offset;
@@ -96,8 +102,8 @@
               const keep = confirm(`Resume ${phaseLabels[phase]}?\n\nYou can set the timer start point next. Press OK to continue.`);
               if (!keep) return;
             }
-            const currentOffset = st.timerOffsetSeconds || 0;
-            const value = prompt(`Start ${phaseLabels[phase]} timer from what time?\nUse MM:SS or minutes.`, formatSeconds(currentOffset));
+            const defaultOffset = defaultStartSecondsForPhase(phase, st);
+            const value = prompt(`Start ${phaseLabels[phase]} timer from what time?\nUse MM:SS or minutes.`, formatSeconds(defaultOffset));
             if (value === null) return;
             st.timerOffsetSeconds = secondsFromInput(value);
             st.phaseStartedAt = new Date().toISOString();
@@ -143,7 +149,8 @@
       alert("No paused running timer found for this match.");
       return;
     }
-    const value = prompt("Resume timer from what time?\nUse MM:SS or minutes.", formatSeconds(st.timerOffsetSeconds || 0));
+    const defaultOffset = phase === "second_half" ? Math.max(SECOND_HALF_START_SECONDS, Number(st.timerOffsetSeconds || 0)) : Number(st.timerOffsetSeconds || 0);
+    const value = prompt("Resume timer from what time?\nUse MM:SS or minutes.", formatSeconds(defaultOffset));
     if (value === null) return;
     st.timerOffsetSeconds = secondsFromInput(value);
     st.phase = phase;
