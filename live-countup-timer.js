@@ -19,5 +19,7 @@ const originalRenderLiveBoard = renderLiveBoard;
 renderLiveBoard = function(match){
   originalRenderLiveBoard(match);
   const label = document.getElementById("currentMatchLabel");
+  const card = document.getElementById("currentMatchCard");
   if (label) label.textContent = match ? "Live Now" : "Match Status";
+  if (card) card.classList.toggle("is-live", !!match);
 };
