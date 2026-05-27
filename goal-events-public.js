@@ -25,6 +25,26 @@ function goalLine(g) {
   return `<span>${playerDisplay(g)}</span><b>${minuteDisplay(g)}</b>`;
 }
 
+function matchById(matchId) {
+  if (!Array.isArray(window.matches) && typeof matches === "undefined") return null;
+  const list = Array.isArray(window.matches) ? window.matches : matches;
+  return list.find((m) => String(m.id) === String(matchId)) || null;
+}
+
+function awardedSideForGoal(match, goal) {
+  if (!match || !goal) return goal?.side || "home";
+  if (goal.goalForTeam === match.home) return "home";
+  if (goal.goalForTeam === match.away) return "away";
+  return goal.side || "home";
+}
+
+function splitGoalsByAwardedTeam(match, goals) {
+  return {
+    home: goals.filter((g) => awardedSideForGoal(match, g) === "home"),
+    away: goals.filter((g) => awardedSideForGoal(match, g) === "away")
+  };
+}
+
 function renderGoalsUnderLive(match) {
   let wrap = document.getElementById("liveGoalScorers");
   const board = document.getElementById("liveMatchBoard");
@@ -40,9 +60,8 @@ function renderGoalsUnderLive(match) {
     return;
   }
   const goals = goalListForMatch(match.id);
-  const home = goals.filter((g) => g.side === "home");
-  const away = goals.filter((g) => g.side === "away");
-  wrap.innerHTML = goals.length ? `<div class="goal-side goal-side-home">${home.map(goalLine).join("")}</div><div class="goal-side goal-side-away">${away.map(goalLine).join("")}</div>` : "";
+  const split = splitGoalsByAwardedTeam(match, goals);
+  wrap.innerHTML = goals.length ? `<div class="goal-side goal-side-home">${split.home.map(goalLine).join("")}</div><div class="goal-side goal-side-away">${split.away.map(goalLine).join("")}</div>` : "";
 }
 
 function fixtureGoalLine(g) {
@@ -53,6 +72,7 @@ function fixtureGoalLine(g) {
 function renderGoalTimelines() {
   document.querySelectorAll(".match-card[data-match-id]").forEach((card) => {
     const id = card.dataset.matchId;
+    const match = matchById(id);
     let box = card.querySelector(".match-goals");
     if (!box) {
       box = document.createElement("div");
@@ -60,9 +80,8 @@ function renderGoalTimelines() {
       card.appendChild(box);
     }
     const goals = goalListForMatch(id);
-    const home = goals.filter((g) => g.side === "home");
-    const away = goals.filter((g) => g.side === "away");
-    box.innerHTML = goals.length ? `<div class="match-goal-side home">${home.map(fixtureGoalLine).join("")}</div><div class="match-goal-side away">${away.map(fixtureGoalLine).join("")}</div>` : "";
+    const split = splitGoalsByAwardedTeam(match, goals);
+    box.innerHTML = goals.length ? `<div class="match-goal-side home">${split.home.map(fixtureGoalLine).join("")}</div><div class="match-goal-side away">${split.away.map(fixtureGoalLine).join("")}</div>` : "";
   });
 }
 
