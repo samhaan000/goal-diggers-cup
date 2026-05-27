@@ -1,4 +1,5 @@
 const goalEventsKey = "goal-diggers-cup-2026-goals";
+const cardEventsKey = "goal-diggers-cup-2026-cards";
 
 function readGoalEvents() {
   try {
@@ -8,9 +9,28 @@ function readGoalEvents() {
   }
 }
 
+function readCardEvents() {
+  try {
+    return JSON.parse(localStorage.getItem(cardEventsKey)) || {};
+  } catch {
+    return {};
+  }
+}
+
 function goalListForMatch(matchId) {
   const data = readGoalEvents();
   return Object.values(data[String(matchId)] || {}).sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+}
+
+function cardListForMatch(matchId) {
+  const data = readCardEvents();
+  return Object.values(data[String(matchId)] || {}).sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+}
+
+function combinedEventsForMatch(matchId) {
+  const goals = goalListForMatch(matchId).map((g) => ({ ...g, eventType: "goal" }));
+  const cards = cardListForMatch(matchId).map((c) => ({ ...c, eventType: "card" }));
+  return [...goals, ...cards].sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
 }
 
 function playerDisplay(g) {
@@ -22,7 +42,27 @@ function minuteDisplay(g) {
 }
 
 function goalLine(g) {
-  return `<span>${playerDisplay(g)}</span><b>${minuteDisplay(g)}</b>`;
+  return `<span><i class="event-icon ball-icon">⚽</i>${playerDisplay(g)}</span><b>${minuteDisplay(g)}</b>`;
+}
+
+function cardIcon(card) {
+  return card.cardType === "red" ? "🟥" : "🟨";
+}
+
+function cardLine(card) {
+  return `<span><i class="event-icon ${card.cardType === "red" ? "red-card-icon" : "yellow-card-icon"}">${cardIcon(card)}</i>#${card.playerNumber} ${card.playerName}</span><b>${minuteDisplay(card)}</b>`;
+}
+
+function eventLine(event) {
+  return event.eventType === "card" ? cardLine(event) : goalLine(event);
+}
+
+function fixtureEventLine(event) {
+  const time = minuteDisplay(event);
+  if (event.eventType === "card") {
+    return `<span><i class="event-icon ${event.cardType === "red" ? "red-card-icon" : "yellow-card-icon"}">${cardIcon(event)}</i>#${event.playerNumber} ${event.playerName}${time ? ` <b>${time}</b>` : ""}</span>`;
+  }
+  return `<span><i class="event-icon ball-icon">⚽</i>${playerDisplay(event)}${time ? ` <b>${time}</b>` : ""}</span>`;
 }
 
 function matchById(matchId) {
@@ -36,6 +76,19 @@ function awardedSideForGoal(match, goal) {
   if (goal.goalForTeam === match.home) return "home";
   if (goal.goalForTeam === match.away) return "away";
   return goal.side || "home";
+}
+
+function eventSideForMatch(match, event) {
+  if (event.eventType === "goal") return awardedSideForGoal(match, event);
+  if (match && event.playerTeam === match.away) return "away";
+  return "home";
+}
+
+function splitEventsByTeam(match, events) {
+  return {
+    home: events.filter((event) => eventSideForMatch(match, event) === "home"),
+    away: events.filter((event) => eventSideForMatch(match, event) === "away")
+  };
 }
 
 function splitGoalsByAwardedTeam(match, goals) {
@@ -59,14 +112,14 @@ function renderGoalsUnderLive(match) {
     wrap.innerHTML = "";
     return;
   }
-  const goals = goalListForMatch(match.id);
-  const split = splitGoalsByAwardedTeam(match, goals);
-  wrap.innerHTML = goals.length ? `<div class="goal-side goal-side-home">${split.home.map(goalLine).join("")}</div><div class="goal-side goal-side-away">${split.away.map(goalLine).join("")}</div>` : "";
+  const events = combinedEventsForMatch(match.id);
+  const split = splitEventsByTeam(match, events);
+  wrap.innerHTML = events.length ? `<div class="goal-side goal-side-home">${split.home.map(eventLine).join("")}</div><div class="goal-side goal-side-away">${split.away.map(eventLine).join("")}</div>` : "";
 }
 
 function fixtureGoalLine(g) {
   const time = minuteDisplay(g);
-  return `<span>${playerDisplay(g)}${time ? ` <b>${time}</b>` : ""}</span>`;
+  return `<span><i class="event-icon ball-icon">⚽</i>${playerDisplay(g)}${time ? ` <b>${time}</b>` : ""}</span>`;
 }
 
 function renderGoalTimelines() {
@@ -79,25 +132,43 @@ function renderGoalTimelines() {
       box.className = "match-goals";
       card.appendChild(box);
     }
-    const goals = goalListForMatch(id);
-    const split = splitGoalsByAwardedTeam(match, goals);
-    box.innerHTML = goals.length ? `<div class="match-goal-side home">${split.home.map(fixtureGoalLine).join("")}</div><div class="match-goal-side away">${split.away.map(fixtureGoalLine).join("")}</div>` : "";
+    const events = combinedEventsForMatch(id);
+    const split = splitEventsByTeam(match, events);
+    box.innerHTML = events.length ? `<div class="match-goal-side home">${split.home.map(fixtureEventLine).join("")}</div><div class="match-goal-side away">${split.away.map(fixtureEventLine).join("")}</div>` : "";
   });
 }
 
 function renderStatsTab() {
   const panel = document.getElementById("panel-stats");
   if (!panel) return;
-  const all = Object.values(readGoalEvents()).flatMap((x) => Object.values(x || {}));
+  const allGoals = Object.values(readGoalEvents()).flatMap((x) => Object.values(x || {}));
+  const allCards = Object.values(readCardEvents()).flatMap((x) => Object.values(x || {}));
   const scorerMap = {};
-  all.forEach((g) => {
+  const cardMap = {};
+
+  allGoals.forEach((g) => {
     if (g.ownGoal) return;
     const key = g.playerId || `${g.playerTeam}_${g.playerNumber}_${g.playerName}`;
     scorerMap[key] = scorerMap[key] || { ...g, goals: 0 };
     scorerMap[key].goals++;
   });
+
+  allCards.forEach((c) => {
+    const key = c.playerId || `${c.playerTeam}_${c.playerNumber}_${c.playerName}`;
+    cardMap[key] = cardMap[key] || { ...c, yellow: 0, red: 0 };
+    if (c.cardType === "red") cardMap[key].red++;
+    else cardMap[key].yellow++;
+  });
+
   const scorers = Object.values(scorerMap).sort((a, b) => b.goals - a.goals || a.playerName.localeCompare(b.playerName));
-  panel.innerHTML = `<div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div></div><div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>`;
+  const carded = Object.values(cardMap).sort((a, b) => (b.red - a.red) || (b.yellow - a.yellow) || a.playerName.localeCompare(b.playerName));
+
+  panel.innerHTML = `
+    <div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div></div>
+    <div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong><i class="event-icon ball-icon">⚽</i>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>
+    <div class="section-head card-stats-head"><div><span class="section-kicker">Discipline</span><h2>Cards</h2></div></div>
+    <div class="stats-list card-stats-list">${carded.length ? carded.map((p, i) => `<div class="stats-row card-stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b><i class="event-icon yellow-card-icon">🟨</i>${p.yellow || 0} <i class="event-icon red-card-icon">🟥</i>${p.red || 0}</b></div>`).join("") : `<div class="empty-state">No cards recorded yet.</div>`}</div>
+  `;
 }
 
 function refreshGoalDisplays() {
@@ -125,6 +196,10 @@ function loadGoalEventsFromFirebase() {
   if (!window.goalDiggersDb) return;
   window.goalDiggersDb.ref("goals").on("value", (snap) => {
     localStorage.setItem(goalEventsKey, JSON.stringify(snap.val() || {}));
+    refreshGoalDisplays();
+  });
+  window.goalDiggersDb.ref("cards").on("value", (snap) => {
+    localStorage.setItem(cardEventsKey, JSON.stringify(snap.val() || {}));
     refreshGoalDisplays();
   });
 }
