@@ -8,3 +8,40 @@ try {
 } catch (e) {
   console.warn("Muli Blues logo update failed", e);
 }
+
+function addFooterSponsorLogos(){
+  const footer = document.querySelector(".site-footer");
+  if (!footer || document.querySelector(".footer-sponsor-row")) return;
+
+  const sponsors = [
+    ["assets/AN.sponsor-01.png", "AN sponsor logo"],
+    ["assets/BML.sponsor-01.png", "BML sponsor logo"],
+    ["assets/Daimyo.sponsor-01.png", "Daimyo sponsor logo"],
+    ["assets/doozi.sponsor-01.png", "Doozi sponsor logo"],
+    ["assets/dynamic%20foundation.sponsor-01.png", "Dynamic Foundation sponsor logo"],
+    ["assets/police.sponsor-01.png", "Police sponsor logo"],
+    ["assets/teddy.sponsor-01.png", "Teddy sponsor logo"],
+    ["assets/skate.sponsor-01.png", "Skate sponsor logo"]
+  ];
+
+  const row = document.createElement("div");
+  row.className = "footer-sponsor-row";
+  row.setAttribute("aria-label", "Sponsor logos");
+
+  sponsors.forEach(([src, alt]) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = alt;
+    img.loading = "lazy";
+    img.decoding = "async";
+    row.appendChild(img);
+  });
+
+  footer.appendChild(row);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", addFooterSponsorLogos);
+} else {
+  addFooterSponsorLogos();
+}
