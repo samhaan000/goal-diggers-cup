@@ -7,22 +7,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=admin-blue-1" />
-  <link rel="stylesheet" href="goal-events-admin.css?v=goal-admin-2" />
+  <link rel="stylesheet" href="admin.css?v=admin-control-panel-1" />
+  <link rel="stylesheet" href="goal-events-admin.css?v=goal-admin-control-1" />
   <link rel="stylesheet" href="admin-security.css?v=security-1" />
 </head>
 <body>
   <main class="admin-shell">
-    <header class="admin-header">
+    <header class="admin-header compact-admin-header">
       <div>
         <span class="kicker">Admin Panel</span>
         <h1>Goal Diggers Cup</h1>
-        <p>Control scores, match phase, scorers, and live link.</p>
+        <p>Match-day control panel for live scores, phases, scorers, and stream link.</p>
       </div>
       <a class="public-link" href="index.html">View Site</a>
     </header>
 
-    <section class="admin-card">
+    <section class="admin-card match-selector-card">
       <label class="field-label" for="matchSelect">Select Match</label>
       <div class="admin-tabs" role="tablist" aria-label="Filter matches">
         <button class="admin-tab active" data-admin-filter="all" type="button">All</button>
@@ -31,33 +31,53 @@
         <button class="admin-tab" data-admin-filter="completed" type="button">Completed</button>
       </div>
       <select id="matchSelect" class="match-select"></select>
-      <div id="matchInfo" class="match-info"></div>
+      <div class="match-nav-row">
+        <button id="prevMatchBtn" class="mini-nav-btn" type="button">Previous</button>
+        <button id="nextMatchBtn" class="mini-nav-btn" type="button">Next</button>
+      </div>
     </section>
 
-    <section class="admin-card score-card">
-      <div class="team-score-row">
-        <strong id="homeTeam">Team A</strong>
-        <div class="score-controls">
-          <button data-score="home" data-delta="-1" type="button">−</button>
-          <span id="homeScore">0</span>
-          <button data-score="home" data-delta="1" type="button">+</button>
-        </div>
+    <section class="admin-card current-match-card-admin">
+      <div class="current-match-topline">
+        <span id="currentMatchNumber">#1</span>
+        <strong id="currentMatchStatus">Upcoming</strong>
       </div>
-      <div class="team-score-row">
-        <strong id="awayTeam">Team B</strong>
-        <div class="score-controls">
-          <button data-score="away" data-delta="-1" type="button">−</button>
-          <span id="awayScore">0</span>
-          <button data-score="away" data-delta="1" type="button">+</button>
-        </div>
-      </div>
-      <button id="saveScoreBtn" class="primary-btn" type="button">Save Score</button>
-      <small class="score-note">Tap + to select the scorer. Tap − to remove the latest goal for that side.</small>
+      <h2 id="currentMatchTitleAdmin">FC Maavadibe vs Smashers FC</h2>
+      <p id="matchInfo">20:45 • Round 1</p>
     </section>
 
-    <section class="admin-card phase-card">
+    <section class="admin-card score-card control-score-card">
+      <div class="control-card-head">
+        <span>Scoreboard Control</span>
+        <strong id="scorePhaseBadge">Upcoming</strong>
+      </div>
+      <div class="scoreboard-control-grid">
+        <div class="score-team score-team-home">
+          <strong id="homeTeam">Team A</strong>
+          <div class="score-controls">
+            <button data-score="home" data-delta="-1" type="button" aria-label="Remove home goal">−</button>
+            <span id="homeScore">0</span>
+            <button data-score="home" data-delta="1" type="button" aria-label="Add home goal">+</button>
+          </div>
+        </div>
+        <div class="score-divider">-</div>
+        <div class="score-team score-team-away">
+          <strong id="awayTeam">Team B</strong>
+          <div class="score-controls">
+            <button data-score="away" data-delta="-1" type="button" aria-label="Remove away goal">−</button>
+            <span id="awayScore">0</span>
+            <button data-score="away" data-delta="1" type="button" aria-label="Add away goal">+</button>
+          </div>
+        </div>
+      </div>
+      <button id="saveScoreBtn" class="primary-btn force-sync-btn" type="button">Force Sync Score</button>
+      <small class="score-note">Tap + to select scorer. Tap − to remove the latest goal for that side.</small>
+      <div id="adminGoalLog" class="admin-goal-log"></div>
+    </section>
+
+    <section class="admin-card phase-card control-phase-card">
       <div class="phase-status">
-        <span>Current Phase</span>
+        <span>Match Phase</span>
         <strong id="phaseLabel">UPCOMING</strong>
       </div>
       <div class="phase-buttons">
@@ -69,8 +89,8 @@
       <button id="resetPhaseBtn" class="ghost-btn" type="button">Reset Selected Match Status</button>
     </section>
 
-    <section class="admin-card">
-      <label class="field-label" for="youtubeLink">YouTube Live Link</label>
+    <section class="admin-card stream-card">
+      <label class="field-label" for="youtubeLink">Live Stream</label>
       <div class="link-input-row">
         <input id="youtubeLink" class="text-input" type="url" value="https://youtube.com/@youthenhancement?si=sXVp1Qaj-kMiVCAF" />
         <button id="pasteLinkBtn" class="small-tool-btn" type="button">Paste</button>
@@ -79,16 +99,17 @@
       <button id="saveSettingsBtn" class="primary-btn" type="button">Save Live Link</button>
     </section>
 
-    <section class="admin-card danger-zone">
+    <details class="admin-card danger-zone danger-details">
+      <summary>Danger Zone</summary>
       <button id="resetScoresBtn" class="danger-btn" type="button">Clear Selected Match Score + Status</button>
       <button id="clearAllDataBtn" class="danger-btn danger-btn-strong" type="button">Clear All Match Data</button>
-      <small><strong>Clear Selected Match Score + Status</strong> only clears the selected match. <strong>Clear All Match Data</strong> clears every score, every status, and saved settings.</small>
-    </section>
+      <small><strong>Clear Selected Match Score + Status</strong> only clears the selected match. <strong>Clear All Match Data</strong> clears every score, every status, saved settings, and goal scorers.</small>
+    </details>
   </main>
 
   <script src="admin-security.js?v=security-1"></script>
   <script src="players.js?v=players-1"></script>
-  <script src="admin.js?v=admin-scorers-2"></script>
-  <script src="goal-events-admin.js?v=goal-admin-2"></script>
+  <script src="admin.js?v=admin-control-panel-1"></script>
+  <script src="goal-events-admin.js?v=goal-admin-control-1"></script>
 </body>
 </html>
