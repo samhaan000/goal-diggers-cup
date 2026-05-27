@@ -4,23 +4,31 @@ function makeBackupPanelDropdown() {
 
   const title = panel.querySelector(".backup-head h2")?.textContent || "Data Backup & Export";
   const status = panel.querySelector("#backupStatusText")?.textContent || "Auto backup ready";
-  const content = panel.innerHTML;
 
   const details = document.createElement("details");
   details.id = "backupPanel";
   details.className = "admin-card backup-card backup-details";
   details.dataset.dropdownReady = "1";
-  details.innerHTML = `
-    <summary class="backup-summary">
-      <span>
-        <small>Data Section</small>
-        <strong>${title}</strong>
-      </span>
-      <em id="backupStatusText">${status}</em>
-    </summary>
-    <div class="backup-details-body">${content}</div>
+
+  const summary = document.createElement("summary");
+  summary.className = "backup-summary";
+  summary.innerHTML = `
+    <span>
+      <small>Data Section</small>
+      <strong>${title}</strong>
+    </span>
+    <em id="backupStatusText">${status}</em>
   `;
 
+  const body = document.createElement("div");
+  body.className = "backup-details-body";
+
+  while (panel.firstChild) {
+    body.appendChild(panel.firstChild);
+  }
+
+  details.appendChild(summary);
+  details.appendChild(body);
   panel.replaceWith(details);
 }
 
