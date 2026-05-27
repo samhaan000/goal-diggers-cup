@@ -1,6 +1,17 @@
 const ADMIN_PASSCODE = "2605";
 const ADMIN_UNLOCK_KEY = "goal-diggers-admin-unlocked";
 
+function injectAdminControlPanelStyles() {
+  if (document.getElementById("adminControlPanelStyles")) return;
+  const link = document.createElement("link");
+  link.id = "adminControlPanelStyles";
+  link.rel = "stylesheet";
+  link.href = "admin-control-panel.css?v=control-panel-1";
+  document.head.appendChild(link);
+}
+
+injectAdminControlPanelStyles();
+
 function isAdminUnlocked() {
   return sessionStorage.getItem(ADMIN_UNLOCK_KEY) === "yes";
 }
