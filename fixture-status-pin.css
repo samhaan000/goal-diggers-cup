@@ -1,0 +1,48 @@
+/* Pin fixture time/round directly under the middle VS/score pill */
+.match-card:not(.final-match-card){
+  position: relative !important;
+  grid-template-areas:
+    "home score away"
+    "goals goals goals" !important;
+  padding-bottom: 30px !important;
+}
+
+.match-card:not(.final-match-card) .status-pill{
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, 24px) !important;
+  display: block !important;
+  width: max-content !important;
+  max-width: 140px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  z-index: 3 !important;
+}
+
+.match-card:not(.final-match-card) .match-meta{
+  position: absolute !important;
+  top: 5px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  text-align: center !important;
+  z-index: 3 !important;
+}
+
+@media(max-width:540px){
+  .match-card:not(.final-match-card){
+    padding-bottom: 30px !important;
+  }
+
+  .match-card:not(.final-match-card) .status-pill{
+    transform: translate(-50%, 23px) !important;
+    max-width: 130px !important;
+  }
+}
