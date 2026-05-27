@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css?v=admin-control-panel-1" />
   <link rel="stylesheet" href="goal-events-admin.css?v=goal-admin-control-1" />
+  <link rel="stylesheet" href="admin-match-control.css?v=match-control-1" />
   <link rel="stylesheet" href="admin-security.css?v=security-1" />
 </head>
 <body>
@@ -51,6 +52,7 @@
         <span>Scoreboard Control</span>
         <strong id="scorePhaseBadge">Upcoming</strong>
       </div>
+      <div id="adminTimerDisplay" class="admin-timer-display">Upcoming</div>
       <div class="scoreboard-control-grid">
         <div class="score-team score-team-home">
           <strong id="homeTeam">Team A</strong>
@@ -86,6 +88,12 @@
         <button data-phase="second_half" type="button">Start 2nd Half</button>
         <button data-phase="fulltime" type="button">Full Time</button>
       </div>
+      <div class="match-control-tools">
+        <button id="pauseMatchBtn" class="tool-action-btn" type="button">Pause Match</button>
+        <button id="resumeMatchBtn" class="tool-action-btn" type="button">Resume Match</button>
+        <button id="adjustTimerBtn" class="tool-action-btn" type="button">Adjust Timer</button>
+        <button id="matchDecisionBtn" class="tool-action-btn decision-btn" type="button">Match Decision</button>
+      </div>
       <button id="resetPhaseBtn" class="ghost-btn" type="button">Reset Selected Match Status</button>
     </section>
 
@@ -111,5 +119,6 @@
   <script src="players.js?v=players-1"></script>
   <script src="admin.js?v=admin-control-panel-1"></script>
   <script src="goal-events-admin.js?v=goal-admin-control-1"></script>
+  <script src="admin-match-control.js?v=match-control-1"></script>
 </body>
 </html>
