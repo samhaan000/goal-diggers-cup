@@ -97,7 +97,7 @@ function renderStatsTab() {
     scorerMap[key].goals++;
   });
   const scorers = Object.values(scorerMap).sort((a, b) => b.goals - a.goals || a.playerName.localeCompare(b.playerName));
-  panel.innerHTML = `<div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div><p>Own goals are not counted for Golden Boot.</p></div><div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>`;
+  panel.innerHTML = `<div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div></div><div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>`;
 }
 
 function refreshGoalDisplays() {
