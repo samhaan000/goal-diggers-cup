@@ -19,5 +19,5 @@ const originalRenderLiveBoard = renderLiveBoard;
 renderLiveBoard = function(match){
   originalRenderLiveBoard(match);
   const label = document.getElementById("currentMatchLabel");
-  if (label) label.textContent = match ? "Live Now" : "Current Match";
+  if (label) label.textContent = match ? "Live Now" : "Match Status";
 };
