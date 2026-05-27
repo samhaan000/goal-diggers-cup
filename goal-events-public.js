@@ -138,6 +138,33 @@ function renderGoalTimelines() {
   });
 }
 
+function finalLeagueMatchesForStats() {
+  if (typeof leagueMatches === "undefined") return [];
+  return leagueMatches.filter((m) => {
+    if (typeof isFullTime === "function") return isFullTime(m);
+    if (typeof phase === "function") return phase(m.id) === "fulltime";
+    return false;
+  });
+}
+
+function cleanSheetStats() {
+  if (typeof teams === "undefined" || typeof matchScore !== "function") return [];
+  const map = Object.fromEntries(teams.map((team) => [team, { team, cleanSheets: 0, played: 0 }]));
+
+  finalLeagueMatchesForStats().forEach((m) => {
+    const sc = matchScore(m);
+    if (!map[m.home] || !map[m.away]) return;
+    map[m.home].played++;
+    map[m.away].played++;
+    if (sc.away === 0) map[m.home].cleanSheets++;
+    if (sc.home === 0) map[m.away].cleanSheets++;
+  });
+
+  return Object.values(map)
+    .filter((row) => row.cleanSheets > 0)
+    .sort((a, b) => b.cleanSheets - a.cleanSheets || a.team.localeCompare(b.team));
+}
+
 function renderStatsTab() {
   const panel = document.getElementById("panel-stats");
   if (!panel) return;
@@ -162,10 +189,13 @@ function renderStatsTab() {
 
   const scorers = Object.values(scorerMap).sort((a, b) => b.goals - a.goals || a.playerName.localeCompare(b.playerName));
   const carded = Object.values(cardMap).sort((a, b) => (b.red - a.red) || (b.yellow - a.yellow) || a.playerName.localeCompare(b.playerName));
+  const cleanSheets = cleanSheetStats();
 
   panel.innerHTML = `
     <div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div></div>
     <div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong><i class="event-icon ball-icon">⚽</i>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>
+    <div class="section-head card-stats-head"><div><span class="section-kicker">Defence</span><h2>Clean Sheets</h2></div></div>
+    <div class="stats-list clean-sheet-list">${cleanSheets.length ? cleanSheets.map((t, i) => `<div class="stats-row clean-sheet-row"><span>${i + 1}</span><strong><i class="event-icon clean-sheet-icon">🧤</i>${t.team}</strong><small>${t.played} matches played</small><b>${t.cleanSheets}</b></div>`).join("") : `<div class="empty-state">No clean sheets recorded yet.</div>`}</div>
     <div class="section-head card-stats-head"><div><span class="section-kicker">Discipline</span><h2>Cards</h2></div></div>
     <div class="stats-list card-stats-list">${carded.length ? carded.map((p, i) => `<div class="stats-row card-stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b><i class="event-icon yellow-card-icon">🟨</i>${p.yellow || 0} <i class="event-icon red-card-icon">🟥</i>${p.red || 0}</b></div>`).join("") : `<div class="empty-state">No cards recorded yet.</div>`}</div>
   `;
