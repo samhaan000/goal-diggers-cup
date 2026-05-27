@@ -1,6 +1,6 @@
 .sponsor-card{
   margin:14px 0;
-  padding:12px 8px 8px;
+  padding:11px 6px 8px;
   background:#fff;
   border:1px solid rgba(184,137,36,.28);
   box-shadow:0 12px 28px rgba(64,37,0,.06);
@@ -8,21 +8,21 @@
   text-align:center;
 }
 .sponsor-card p{
-  margin:0 0 6px;
+  margin:0 0 4px;
   color:#806018;
-  font-size:.66rem;
+  font-size:.56rem;
   font-weight:950;
-  letter-spacing:.06em;
+  letter-spacing:.05em;
   text-transform:uppercase;
 }
 .sponsor-grid{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:6px 2px;
+  gap:4px 1px;
   align-items:center;
 }
 .sponsor-logo{
-  height:44px;
+  height:48px;
   display:grid;
   place-items:center;
   padding:0;
@@ -35,27 +35,27 @@
 .sponsor-logo img{
   display:block;
   max-width:100%;
-  max-height:42px;
+  max-height:47px;
   width:auto;
   height:auto;
   object-fit:contain;
 }
 @media(min-width:700px){
   .sponsor-card{
-    padding:14px 12px 10px;
+    padding:12px 10px 9px;
   }
   .sponsor-card p{
-    margin-bottom:8px;
-    font-size:.74rem;
+    margin-bottom:5px;
+    font-size:.66rem;
   }
   .sponsor-grid{
-    gap:8px 6px;
+    gap:6px 4px;
   }
   .sponsor-logo{
-    height:54px;
+    height:58px;
   }
   .sponsor-logo img{
     max-width:100%;
-    max-height:52px;
+    max-height:57px;
   }
 }
