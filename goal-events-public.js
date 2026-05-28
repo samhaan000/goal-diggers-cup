@@ -98,6 +98,13 @@ function splitGoalsByAwardedTeam(match, goals) {
   };
 }
 
+function setHtmlIfChanged(el, html) {
+  if (!el) return;
+  if (el.dataset.lastMarkup === html) return;
+  el.innerHTML = html;
+  el.dataset.lastMarkup = html;
+}
+
 function renderGoalsUnderLive(match) {
   let wrap = document.getElementById("liveGoalScorers");
   const board = document.getElementById("liveMatchBoard");
@@ -109,12 +116,13 @@ function renderGoalsUnderLive(match) {
     board.appendChild(wrap);
   }
   if (!match) {
-    wrap.innerHTML = "";
+    setHtmlIfChanged(wrap, "");
     return;
   }
   const events = combinedEventsForMatch(match.id);
   const split = splitEventsByTeam(match, events);
-  wrap.innerHTML = events.length ? `<div class="goal-side goal-side-home">${split.home.map(eventLine).join("")}</div><div class="goal-side goal-side-away">${split.away.map(eventLine).join("")}</div>` : "";
+  const html = events.length ? `<div class="goal-side goal-side-home">${split.home.map(eventLine).join("")}</div><div class="goal-side goal-side-away">${split.away.map(eventLine).join("")}</div>` : "";
+  setHtmlIfChanged(wrap, html);
 }
 
 function fixtureGoalLine(g) {
@@ -134,7 +142,8 @@ function renderGoalTimelines() {
     }
     const events = combinedEventsForMatch(id);
     const split = splitEventsByTeam(match, events);
-    box.innerHTML = events.length ? `<div class="match-goal-side home">${split.home.map(fixtureEventLine).join("")}</div><div class="match-goal-side away">${split.away.map(fixtureEventLine).join("")}</div>` : "";
+    const html = events.length ? `<div class="match-goal-side home">${split.home.map(fixtureEventLine).join("")}</div><div class="match-goal-side away">${split.away.map(fixtureEventLine).join("")}</div>` : "";
+    setHtmlIfChanged(box, html);
   });
 }
 
@@ -191,7 +200,7 @@ function renderStatsTab() {
   const carded = Object.values(cardMap).sort((a, b) => (b.red - a.red) || (b.yellow - a.yellow) || a.playerName.localeCompare(b.playerName));
   const cleanSheets = cleanSheetStats();
 
-  panel.innerHTML = `
+  const html = `
     <div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div></div>
     <div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong><i class="event-icon ball-icon">⚽</i>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>
     <div class="section-head card-stats-head"><div><span class="section-kicker">Defence</span><h2>Clean Sheets</h2></div></div>
@@ -199,6 +208,7 @@ function renderStatsTab() {
     <div class="section-head card-stats-head"><div><span class="section-kicker">Discipline</span><h2>Cards</h2></div></div>
     <div class="stats-list card-stats-list">${carded.length ? carded.map((p, i) => `<div class="stats-row card-stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b><i class="event-icon yellow-card-icon">🟨</i>${p.yellow || 0} <i class="event-icon red-card-icon">🟥</i>${p.red || 0}</b></div>`).join("") : `<div class="empty-state">No cards recorded yet.</div>`}</div>
   `;
+  setHtmlIfChanged(panel, html);
 }
 
 function refreshGoalDisplays() {
@@ -235,5 +245,4 @@ function loadGoalEventsFromFirebase() {
 }
 
 setTimeout(loadGoalEventsFromFirebase, 1800);
-setInterval(refreshGoalDisplays, 2000);
 refreshGoalDisplays();
