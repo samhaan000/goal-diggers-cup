@@ -10,6 +10,18 @@ function injectAdminControlPanelStyles() {
   document.head.appendChild(link);
 }
 
+function loadAdminUtilityScript(src, id) {
+  if (document.getElementById(id)) return;
+  const script = document.createElement("script");
+  script.id = id;
+  script.src = src;
+  document.body.appendChild(script);
+}
+
+function loadUnlockedAdminUtilities() {
+  loadAdminUtilityScript("admin-card-history-audit.js?v=card-history-audit-1", "adminCardHistoryAuditScript");
+}
+
 injectAdminControlPanelStyles();
 
 function isAdminUnlocked() {
@@ -51,6 +63,7 @@ function buildAdminLock() {
       document.body.classList.remove("admin-locked");
       screen.remove();
       addLockButton();
+      loadUnlockedAdminUtilities();
       return;
     }
     error.textContent = "Wrong passcode. Try again.";
@@ -76,9 +89,15 @@ function addLockButton() {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     buildAdminLock();
-    if (isAdminUnlocked()) addLockButton();
+    if (isAdminUnlocked()) {
+      addLockButton();
+      loadUnlockedAdminUtilities();
+    }
   });
 } else {
   buildAdminLock();
-  if (isAdminUnlocked()) addLockButton();
+  if (isAdminUnlocked()) {
+    addLockButton();
+    loadUnlockedAdminUtilities();
+  }
 }
