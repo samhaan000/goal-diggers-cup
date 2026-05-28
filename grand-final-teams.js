@@ -5,9 +5,13 @@ function grandFinalTeams() {
   return { home: rows[0].team, away: rows[1].team };
 }
 
+function cleanTeamLogo(team) {
+  const logo = typeof teamLogos !== "undefined" ? teamLogos[team] : "";
+  return logo ? `<img class="team-logo clean-final-logo" src="${logo}" alt="${team} logo" decoding="async">` : "";
+}
+
 function grandFinalTeamHtml(team, side) {
-  if (typeof teamMark !== "function") return `<div class="fixture-team fixture-${side}"><span>${team}</span></div>`;
-  return `<div class="fixture-team fixture-${side}">${side === "home" ? `${teamMark(team)}<span>${team}</span>` : `<span>${team}</span>${teamMark(team)}`}</div>`;
+  return `<div class="fixture-team fixture-${side}">${side === "home" ? `${cleanTeamLogo(team)}<span>${team}</span>` : `<span>${team}</span>${cleanTeamLogo(team)}`}</div>`;
 }
 
 function renderNextMatchVisual(el, home, away) {
@@ -15,13 +19,13 @@ function renderNextMatchVisual(el, home, away) {
   el.classList.add("next-match-rich");
   el.innerHTML = `
     <span class="next-team-inline next-team-home">
-      ${typeof teamMark === "function" ? teamMark(home) : ""}
+      ${cleanTeamLogo(home)}
       <span class="next-team-name">${home}</span>
     </span>
     <span class="next-match-vs">vs</span>
     <span class="next-team-inline next-team-away">
       <span class="next-team-name">${away}</span>
-      ${typeof teamMark === "function" ? teamMark(away) : ""}
+      ${cleanTeamLogo(away)}
     </span>
   `;
 }
