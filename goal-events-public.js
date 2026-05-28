@@ -33,8 +33,8 @@ function combinedEventsForMatch(matchId) {
   return [...goals, ...cards].sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
 }
 
-function playerDisplay(g) {
-  return `#${g.playerNumber} ${g.playerName}${g.ownGoal ? " (OG)" : ""}`;
+function publicPlayerDisplay(g) {
+  return `${g.playerName}${g.ownGoal ? " (OG)" : ""}`;
 }
 
 function minuteDisplay(g) {
@@ -42,7 +42,7 @@ function minuteDisplay(g) {
 }
 
 function goalLine(g) {
-  return `<span><i class="event-icon ball-icon">⚽</i>${playerDisplay(g)}</span><b>${minuteDisplay(g)}</b>`;
+  return `<span><i class="event-icon ball-icon">⚽</i>${publicPlayerDisplay(g)}</span><b>${minuteDisplay(g)}</b>`;
 }
 
 function cardIcon(card) {
@@ -50,7 +50,7 @@ function cardIcon(card) {
 }
 
 function cardLine(card) {
-  return `<span><i class="event-icon ${card.cardType === "red" ? "red-card-icon" : "yellow-card-icon"}">${cardIcon(card)}</i>#${card.playerNumber} ${card.playerName}</span><b>${minuteDisplay(card)}</b>`;
+  return `<span><i class="event-icon ${card.cardType === "red" ? "red-card-icon" : "yellow-card-icon"}">${cardIcon(card)}</i>${card.playerName}</span><b>${minuteDisplay(card)}</b>`;
 }
 
 function eventLine(event) {
@@ -60,9 +60,9 @@ function eventLine(event) {
 function fixtureEventLine(event) {
   const time = minuteDisplay(event);
   if (event.eventType === "card") {
-    return `<span><i class="event-icon ${event.cardType === "red" ? "red-card-icon" : "yellow-card-icon"}">${cardIcon(event)}</i>#${event.playerNumber} ${event.playerName}${time ? ` <b>${time}</b>` : ""}</span>`;
+    return `<span><i class="event-icon ${event.cardType === "red" ? "red-card-icon" : "yellow-card-icon"}">${cardIcon(event)}</i>${event.playerName}${time ? ` <b>${time}</b>` : ""}</span>`;
   }
-  return `<span><i class="event-icon ball-icon">⚽</i>${playerDisplay(event)}${time ? ` <b>${time}</b>` : ""}</span>`;
+  return `<span><i class="event-icon ball-icon">⚽</i>${publicPlayerDisplay(event)}${time ? ` <b>${time}</b>` : ""}</span>`;
 }
 
 function matchById(matchId) {
@@ -127,7 +127,7 @@ function renderGoalsUnderLive(match) {
 
 function fixtureGoalLine(g) {
   const time = minuteDisplay(g);
-  return `<span><i class="event-icon ball-icon">⚽</i>${playerDisplay(g)}${time ? ` <b>${time}</b>` : ""}</span>`;
+  return `<span><i class="event-icon ball-icon">⚽</i>${publicPlayerDisplay(g)}${time ? ` <b>${time}</b>` : ""}</span>`;
 }
 
 function renderGoalTimelines() {
@@ -202,11 +202,11 @@ function renderStatsTab() {
 
   const html = `
     <div class="section-head"><div><span class="section-kicker">Stats</span><h2>Top Scorers</h2></div></div>
-    <div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong><i class="event-icon ball-icon">⚽</i>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>
+    <div class="stats-list">${scorers.length ? scorers.map((p, i) => `<div class="stats-row"><span>${i + 1}</span><strong><i class="event-icon ball-icon">⚽</i>${p.playerName}</strong><small>${p.playerTeam}</small><b>${p.goals}</b></div>`).join("") : `<div class="empty-state">No goals recorded yet.</div>`}</div>
     <div class="section-head card-stats-head"><div><span class="section-kicker">Defence</span><h2>Clean Sheets</h2></div></div>
     <div class="stats-list clean-sheet-list">${cleanSheets.length ? cleanSheets.map((t, i) => `<div class="stats-row clean-sheet-row"><span>${i + 1}</span><strong><i class="event-icon clean-sheet-icon">🧤</i>${t.team}</strong><small>${t.played} matches played</small><b>${t.cleanSheets}</b></div>`).join("") : `<div class="empty-state">No clean sheets recorded yet.</div>`}</div>
     <div class="section-head card-stats-head"><div><span class="section-kicker">Discipline</span><h2>Cards</h2></div></div>
-    <div class="stats-list card-stats-list">${carded.length ? carded.map((p, i) => `<div class="stats-row card-stats-row"><span>${i + 1}</span><strong>#${p.playerNumber} ${p.playerName}</strong><small>${p.playerTeam}</small><b><i class="event-icon yellow-card-icon">🟨</i>${p.yellow || 0} <i class="event-icon red-card-icon">🟥</i>${p.red || 0}</b></div>`).join("") : `<div class="empty-state">No cards recorded yet.</div>`}</div>
+    <div class="stats-list card-stats-list">${carded.length ? carded.map((p, i) => `<div class="stats-row card-stats-row"><span>${i + 1}</span><strong>${p.playerName}</strong><small>${p.playerTeam}</small><b><i class="event-icon yellow-card-icon">🟨</i>${p.yellow || 0} <i class="event-icon red-card-icon">🟥</i>${p.red || 0}</b></div>`).join("") : `<div class="empty-state">No cards recorded yet.</div>`}</div>
   `;
   setHtmlIfChanged(panel, html);
 }
