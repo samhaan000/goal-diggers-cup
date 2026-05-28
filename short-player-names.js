@@ -6,14 +6,14 @@ function shortPlayerName(name) {
 }
 
 function applyShortPlayerNames(root = document) {
-  root.querySelectorAll(".match-goals .match-goal-side span, .live-goal-scorers .goal-side span, .stats-list .stats-row strong").forEach((el) => {
+  root.querySelectorAll(".match-goals .match-goal-side span, .live-goal-scorers .goal-side span").forEach((el) => {
     if (el.dataset.shortened === "1") return;
 
     el.childNodes.forEach((node) => {
       if (node.nodeType !== Node.TEXT_NODE) return;
       const original = node.textContent || "";
-      const shortened = original.replace(/#(\d+)\s+([A-Za-z'’\-]+(?:\s+[A-Za-z'’\-]+){1,5})/g, (full, number, name) => {
-        return `#${number} ${shortPlayerName(name)}`;
+      const shortened = original.replace(/([A-Za-z'’\-]+(?:\s+[A-Za-z'’\-]+){1,5})(?=\s*(?:\(|\d{1,2}:\d{2}|$))/g, (full, name) => {
+        return shortPlayerName(name);
       });
       node.textContent = shortened;
     });
