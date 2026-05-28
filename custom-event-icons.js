@@ -1,19 +1,23 @@
 const CUSTOM_EVENT_ICON_SOURCES = {
   ball: ["assets/ball.svg", "assets/ball.png", "assets/ball.webp", "assets/ball"],
   yellow: ["assets/yellow%20card.svg", "assets/yellow card.svg", "assets/yellow%20card.png", "assets/yellow card.png", "assets/yellow%20card.webp", "assets/yellow card.webp", "assets/yellow%20card", "assets/yellow card"],
-  red: ["assets/red%20card.svg", "assets/red card.svg", "assets/red%20card.png", "assets/red card.png", "assets/red%20card.webp", "assets/red card.webp", "assets/red%20card", "assets/red card"]
+  red: ["assets/red%20card.svg", "assets/red card.svg", "assets/red%20card.png", "assets/red card.png", "assets/red%20card.webp", "assets/red card.webp", "assets/red%20card", "assets/red card"],
+  clean: ["assets/cleansheet-01.svg", "assets/cleansheet-01.png", "assets/cleansheet-01.webp", "assets/cleansheet-01"]
 };
 
 function customIconType(el) {
   if (el.classList.contains("ball-icon")) return "ball";
   if (el.classList.contains("yellow-card-icon")) return "yellow";
   if (el.classList.contains("red-card-icon")) return "red";
+  if (el.classList.contains("clean-sheet-icon")) return "clean";
   return null;
 }
 
 function setIconImage(img, sources, index = 0) {
   if (!sources[index]) return;
+  if (img.dataset.currentSrc === sources[index]) return;
   img.dataset.iconIndex = String(index);
+  img.dataset.currentSrc = sources[index];
   img.src = sources[index];
 }
 
@@ -45,5 +49,4 @@ function replaceEventIcons(root = document) {
 
 const customIconObserver = new MutationObserver(() => replaceEventIcons());
 customIconObserver.observe(document.body, { childList: true, subtree: true });
-setInterval(replaceEventIcons, 1500);
 replaceEventIcons();
