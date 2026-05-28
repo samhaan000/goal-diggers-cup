@@ -1,5 +1,6 @@
 const goalEventsKey = "goal-diggers-cup-2026-goals";
 const cardEventsKey = "goal-diggers-cup-2026-cards";
+let goalEventFirebaseListenersAttached = false;
 
 function readGoalEvents() {
   try {
@@ -174,6 +175,10 @@ function cleanSheetStats() {
     .sort((a, b) => b.cleanSheets - a.cleanSheets || a.team.localeCompare(b.team));
 }
 
+function statPlayerKey(event) {
+  return event.playerId || `${event.playerTeam || "Unknown"}_${event.playerNumber || ""}_${event.playerName || "Unknown Player"}`;
+}
+
 function renderStatsTab() {
   const panel = document.getElementById("panel-stats");
   if (!panel) return;
@@ -184,14 +189,14 @@ function renderStatsTab() {
 
   allGoals.forEach((g) => {
     if (g.ownGoal) return;
-    const key = g.playerId || `${g.playerTeam}_${g.playerNumber}_${g.playerName}`;
-    scorerMap[key] = scorerMap[key] || { ...g, goals: 0 };
+    const key = statPlayerKey(g);
+    scorerMap[key] = scorerMap[key] || { ...g, playerName: g.playerName || "Unknown Player", playerTeam: g.playerTeam || "Unknown Team", goals: 0 };
     scorerMap[key].goals++;
   });
 
   allCards.forEach((c) => {
-    const key = c.playerId || `${c.playerTeam}_${c.playerNumber}_${c.playerName}`;
-    cardMap[key] = cardMap[key] || { ...c, yellow: 0, red: 0 };
+    const key = statPlayerKey(c);
+    cardMap[key] = cardMap[key] || { ...c, playerName: c.playerName || "Unknown Player", playerTeam: c.playerTeam || "Unknown Team", yellow: 0, red: 0 };
     if (c.cardType === "red") cardMap[key].red++;
     else cardMap[key].yellow++;
   });
@@ -232,8 +237,13 @@ renderTable = function () {
   refreshGoalDisplays();
 };
 
-function loadGoalEventsFromFirebase() {
-  if (!window.goalDiggersDb) return;
+function loadGoalEventsFromFirebase(retry = 0) {
+  if (goalEventFirebaseListenersAttached) return;
+  if (!window.goalDiggersDb) {
+    if (retry < 30) setTimeout(() => loadGoalEventsFromFirebase(retry + 1), 500);
+    return;
+  }
+  goalEventFirebaseListenersAttached = true;
   window.goalDiggersDb.ref("goals").on("value", (snap) => {
     localStorage.setItem(goalEventsKey, JSON.stringify(snap.val() || {}));
     refreshGoalDisplays();
@@ -244,5 +254,5 @@ function loadGoalEventsFromFirebase() {
   });
 }
 
-setTimeout(loadGoalEventsFromFirebase, 1800);
+setTimeout(() => loadGoalEventsFromFirebase(), 500);
 refreshGoalDisplays();
