@@ -116,6 +116,44 @@
     card.style.display = hidden ? "none" : "";
   }
 
+  function ensureFinalLiveStyles() {
+    if (document.getElementById("finalLiveTagStyle")) return;
+    const style = document.createElement("style");
+    style.id = "finalLiveTagStyle";
+    style.textContent = `
+      .final-live-action-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+      .final-live-action-row .watch-live-btn{margin-top:0!important}
+      .final-live-tag{display:inline-flex;align-items:center;color:#8a6517;font-size:.72rem;font-weight:1000;letter-spacing:.11em;text-transform:uppercase;line-height:1;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+      @media(max-width:540px){.final-live-action-row{gap:10px;margin-top:12px}.final-live-tag{font-size:.62rem;letter-spacing:.09em}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function updateFinalLiveTag(isCurrentFinal) {
+    ensureFinalLiveStyles();
+    const card = document.getElementById("currentMatchCard");
+    const watch = card?.querySelector(".watch-live-btn");
+    if (!card || !watch) return;
+
+    let row = card.querySelector(".final-live-action-row");
+    if (!row) {
+      row = document.createElement("div");
+      row.className = "final-live-action-row";
+      watch.parentNode.insertBefore(row, watch);
+      row.appendChild(watch);
+    }
+
+    let tag = row.querySelector(".final-live-tag");
+    if (!tag) {
+      tag = document.createElement("span");
+      tag.className = "final-live-tag";
+      row.appendChild(tag);
+    }
+
+    tag.textContent = isCurrentFinal ? "Grand Finale" : "";
+    tag.hidden = !isCurrentFinal;
+  }
+
   function updateLiveFinalBoard() {
     const finalMatch = applyPublicFinalists();
     if (!finalMatch) return;
@@ -124,6 +162,7 @@
     const isCurrentFinal = String(st.currentMatchId) === String(FINAL_ID) && FINAL_ACTIVE_PHASES.includes(finalPhase);
 
     hideNextMatchCard(isCurrentFinal);
+    updateFinalLiveTag(isCurrentFinal);
     if (!isCurrentFinal) return;
 
     const homeName = document.getElementById("liveHomeName");
