@@ -35,10 +35,15 @@ function combinedEventsForMatch(matchId) {
 }
 
 function publicPlayerDisplay(g) {
-  return `${g.playerName}${g.ownGoal ? " (OG)" : ""}`;
+  const labels = [];
+  if (g.ownGoal) labels.push("OG");
+  if (g.isPenalty) labels.push("P");
+  if (g.isShootout) labels.push("PEN");
+  return `${g.playerName}${labels.length ? ` (${labels.join(" / ")})` : ""}`;
 }
 
 function minuteDisplay(g) {
+  if (g.isShootout) return "PEN";
   return g.matchTime || "";
 }
 
@@ -99,6 +104,21 @@ function splitGoalsByAwardedTeam(match, goals) {
   };
 }
 
+function shootoutScoreForMatch(matchId) {
+  const match = matchById(matchId);
+  const goals = goalListForMatch(matchId).filter((g) => g.isShootout);
+  return goals.reduce((acc, g) => {
+    const side = awardedSideForGoal(match, g) === "away" ? "away" : "home";
+    acc[side] += 1;
+    return acc;
+  }, { home: 0, away: 0 });
+}
+
+function shootoutWinnerText(match, pen) {
+  if (!match || pen.home === pen.away) return "";
+  return `${pen.home > pen.away ? match.home : match.away} wins on penalties`;
+}
+
 function setHtmlIfChanged(el, html) {
   if (!el) return;
   if (el.dataset.lastMarkup === html) return;
@@ -145,6 +165,21 @@ function renderGoalTimelines() {
     const split = splitEventsByTeam(match, events);
     const html = events.length ? `<div class="match-goal-side home">${split.home.map(fixtureEventLine).join("")}</div><div class="match-goal-side away">${split.away.map(fixtureEventLine).join("")}</div>` : "";
     setHtmlIfChanged(box, html);
+
+    let penBox = card.querySelector(".penalty-shootout-result");
+    if (!penBox) {
+      penBox = document.createElement("div");
+      penBox.className = "penalty-shootout-result";
+      card.appendChild(penBox);
+    }
+    const pen = shootoutScoreForMatch(id);
+    if (pen.home || pen.away) {
+      penBox.hidden = false;
+      setHtmlIfChanged(penBox, `<strong>PEN ${pen.home} - ${pen.away}</strong>${shootoutWinnerText(match, pen) ? `<span>${shootoutWinnerText(match, pen)}</span>` : ""}`);
+    } else {
+      penBox.hidden = true;
+      setHtmlIfChanged(penBox, "");
+    }
   });
 }
 
@@ -188,7 +223,7 @@ function renderStatsTab() {
   const cardMap = {};
 
   allGoals.forEach((g) => {
-    if (g.ownGoal) return;
+    if (g.ownGoal || g.isShootout) return;
     const key = statPlayerKey(g);
     scorerMap[key] = scorerMap[key] || { ...g, playerName: g.playerName || "Unknown Player", playerTeam: g.playerTeam || "Unknown Team", goals: 0 };
     scorerMap[key].goals++;
