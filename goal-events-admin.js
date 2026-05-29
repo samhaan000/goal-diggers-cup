@@ -57,6 +57,27 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function goalModeOptionsHtml() {
+  return `
+    <div class="goal-mode-box">
+      <label class="goal-mode-check"><input id="goalIsPenalty" type="checkbox"> Penalty goal during match <small>Counts in score + top scorers</small></label>
+      <label class="goal-mode-check shootout"><input id="goalIsShootout" type="checkbox"> Penalty shootout goal <small>Counts only in PEN score</small></label>
+    </div>
+  `;
+}
+
+function bindGoalModeOptions() {
+  const penalty = document.getElementById("goalIsPenalty");
+  const shootout = document.getElementById("goalIsShootout");
+  if (!penalty || !shootout) return;
+  shootout.addEventListener("change", () => {
+    if (shootout.checked) penalty.checked = false;
+  });
+  penalty.addEventListener("change", () => {
+    if (penalty.checked) shootout.checked = false;
+  });
+}
+
 function playerButton(player, goalForTeam, isOwnGoal) {
   return `<button class="player-pick-btn" data-player-id="${escapeHtml(player.id)}" data-player-name="${escapeHtml(player.name)}" data-player-number="${escapeHtml(player.number)}" data-player-team="${escapeHtml(player.team)}" data-goal-team="${escapeHtml(goalForTeam)}" data-own-goal="${isOwnGoal ? "1" : "0"}" type="button"><b>#${escapeHtml(player.number)}</b><span>${escapeHtml(player.name)}</span>${isOwnGoal ? "<em>OG</em>" : "<i>⚽</i>"}</button>`;
 }
@@ -85,6 +106,7 @@ function openGoalPicker(side) {
         <div><span>Goal for</span><strong>${escapeHtml(goalTeam)}</strong></div>
         <button type="button" id="closeGoalPicker">×</button>
       </div>
+      ${goalModeOptionsHtml()}
       <div class="goal-picker-section">
         <h3>${escapeHtml(goalTeam)}</h3>
         ${normal.length ? normal.map((p) => playerButton(p, goalTeam, false)).join("") : `<p class="empty-picker-note">No players found for ${escapeHtml(goalTeam)}.</p>`}
@@ -96,6 +118,7 @@ function openGoalPicker(side) {
     </div>`;
 
   document.body.appendChild(overlay);
+  bindGoalModeOptions();
   document.getElementById("closeGoalPicker").addEventListener("click", closeGoalPicker);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeGoalPicker();
@@ -107,7 +130,6 @@ function openGoalPicker(side) {
 
 function openCardPicker(cardType) {
   const m = selectedMatchObj();
-  const players = allPlayersForMatch();
   const icon = cardType === "red" ? "🟥" : "🟨";
   const label = cardType === "red" ? "Red Card" : "Yellow Card";
 
@@ -147,6 +169,8 @@ function addGoalFromPlayer(btn, side) {
   const id = String(selectedId);
   all[id] = all[id] || {};
 
+  const isShootout = document.getElementById("goalIsShootout")?.checked === true;
+  const isPenalty = isShootout ? false : document.getElementById("goalIsPenalty")?.checked === true;
   const goalId = `goal_${Date.now()}_${Math.random().toString(16).slice(2)}`;
   all[id][goalId] = {
     id: goalId,
@@ -159,17 +183,21 @@ function addGoalFromPlayer(btn, side) {
     playerNumber: Number(btn.dataset.playerNumber),
     playerTeam: btn.dataset.playerTeam,
     ownGoal: btn.dataset.ownGoal === "1",
-    phase: matchPhase(selectedId),
-    matchTime: mmssFromPhaseStart(),
+    isPenalty,
+    isShootout,
+    phase: isShootout ? "shootout" : matchPhase(selectedId),
+    matchTime: isShootout ? "PEN" : mmssFromPhaseStart(),
     createdAt: new Date().toISOString()
   };
 
   writeGoalEvents(all);
 
-  const s = scores();
-  s[selectedId] = s[selectedId] || { home: "0", away: "0" };
-  s[selectedId][side] = String(Number(s[selectedId][side] || 0) + 1);
-  writeJson(scoreKey, s);
+  if (!isShootout) {
+    const s = scores();
+    s[selectedId] = s[selectedId] || { home: "0", away: "0" };
+    s[selectedId][side] = String(Number(s[selectedId][side] || 0) + 1);
+    writeJson(scoreKey, s);
+  }
 
   closeGoalPicker();
   render();
@@ -205,7 +233,7 @@ function removeLastGoal(side) {
   const all = readGoalEvents();
   const id = String(selectedId);
   const list = Object.values(all[id] || {})
-    .filter((g) => g.side === side)
+    .filter((g) => g.side === side && !g.isShootout)
     .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
 
   if (list.length) {
@@ -250,8 +278,10 @@ function openGoalEditor(goalId) {
         ${players.map((p) => `<option value="${escapeHtml(p.id)}" ${p.id === g.playerId ? "selected" : ""}>#${escapeHtml(p.number)} ${escapeHtml(p.name)} — ${escapeHtml(p.team)}</option>`).join("")}
       </select>
       <label class="edit-check"><input id="editOwnGoal" type="checkbox" ${g.ownGoal ? "checked" : ""}> Own goal (OG)</label>
+      <label class="edit-check"><input id="editPenaltyGoal" type="checkbox" ${g.isPenalty ? "checked" : ""}> Penalty goal during match</label>
+      <label class="edit-check"><input id="editShootoutGoal" type="checkbox" ${g.isShootout ? "checked" : ""}> Penalty shootout goal</label>
       <label class="edit-label">Time shown</label>
-      <input id="editGoalTime" class="edit-input" value="${escapeHtml(g.matchTime || "")}" placeholder="00:23">
+      <input id="editGoalTime" class="edit-input" value="${escapeHtml(g.matchTime || "")}" placeholder="00:23 or PEN">
       <div class="edit-actions">
         <button id="saveGoalEdit" class="primary-btn" type="button">Save Edit</button>
         <button id="deleteGoalEdit" class="danger-btn" type="button">Delete Goal</button>
@@ -263,6 +293,10 @@ function openGoalEditor(goalId) {
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeGoalPicker();
   });
+  const editPenalty = document.getElementById("editPenaltyGoal");
+  const editShootout = document.getElementById("editShootoutGoal");
+  editShootout?.addEventListener("change", () => { if (editShootout.checked) editPenalty.checked = false; });
+  editPenalty?.addEventListener("change", () => { if (editPenalty.checked) editShootout.checked = false; });
   document.getElementById("saveGoalEdit").addEventListener("click", () => saveGoalEdit(goalId));
   document.getElementById("deleteGoalEdit").addEventListener("click", () => deleteGoal(goalId));
 }
@@ -310,11 +344,23 @@ function openCardEditor(cardId) {
   document.getElementById("deleteCardEdit").addEventListener("click", () => deleteCard(cardId));
 }
 
+function adjustScoreForShootoutChange(goal, wasShootout, isShootout) {
+  if (wasShootout === isShootout) return;
+  const s = scores();
+  const id = goal.matchId || selectedId;
+  const side = goal.side === "away" ? "away" : "home";
+  s[id] = s[id] || { home: "0", away: "0" };
+  const current = Number(s[id][side] || 0);
+  s[id][side] = String(isShootout ? Math.max(0, current - 1) : current + 1);
+  writeJson(scoreKey, s);
+}
+
 function saveGoalEdit(goalId) {
   const all = readGoalEvents();
   const g = all[String(selectedId)]?.[goalId];
   if (!g) return;
 
+  const wasShootout = g.isShootout === true;
   const playerId = document.getElementById("editGoalPlayer").value;
   const p = allPlayersForMatch().find((x) => x.id === playerId);
   if (p) {
@@ -324,10 +370,15 @@ function saveGoalEdit(goalId) {
     g.playerTeam = p.team;
   }
   g.ownGoal = document.getElementById("editOwnGoal").checked;
-  g.matchTime = document.getElementById("editGoalTime").value.trim();
+  g.isShootout = document.getElementById("editShootoutGoal").checked;
+  g.isPenalty = g.isShootout ? false : document.getElementById("editPenaltyGoal").checked;
+  g.phase = g.isShootout ? "shootout" : (g.phase === "shootout" ? matchPhase(selectedId) : g.phase);
+  g.matchTime = document.getElementById("editGoalTime").value.trim() || (g.isShootout ? "PEN" : "");
 
+  adjustScoreForShootoutChange(g, wasShootout, g.isShootout);
   writeGoalEvents(all);
   closeGoalPicker();
+  render();
   renderGoalLog();
 }
 
@@ -353,19 +404,21 @@ function saveCardEdit(cardId) {
 }
 
 function deleteGoal(goalId) {
-  if (!confirm("Delete this goal and reduce the score by 1?")) return;
-
   const all = readGoalEvents();
   const g = all[String(selectedId)]?.[goalId];
   if (!g) return;
+  const msg = g.isShootout ? "Delete this shootout penalty?" : "Delete this goal and reduce the score by 1?";
+  if (!confirm(msg)) return;
 
   delete all[String(selectedId)][goalId];
   writeGoalEvents(all);
 
-  const s = scores();
-  s[selectedId] = s[selectedId] || { home: "0", away: "0" };
-  s[selectedId][g.side] = String(Math.max(0, Number(s[selectedId][g.side] || 0) - 1));
-  writeJson(scoreKey, s);
+  if (!g.isShootout) {
+    const s = scores();
+    s[selectedId] = s[selectedId] || { home: "0", away: "0" };
+    s[selectedId][g.side] = String(Math.max(0, Number(s[selectedId][g.side] || 0) - 1));
+    writeJson(scoreKey, s);
+  }
 
   closeGoalPicker();
   render();
@@ -408,6 +461,13 @@ function combinedMatchEvents() {
   return [...goals, ...cards].sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
 }
 
+function goalEventLabel(event) {
+  if (event.isShootout) return "PEN";
+  if (event.isPenalty) return "(P)";
+  if (event.ownGoal) return "(OG)";
+  return "";
+}
+
 function renderGoalLog() {
   ensureCardControls();
 
@@ -431,7 +491,8 @@ function renderGoalLog() {
             const icon = event.cardType === "red" ? "🟥" : "🟨";
             return `<div class="admin-goal-row admin-card-row"><span>${icon} #${escapeHtml(event.playerNumber)} ${escapeHtml(event.playerName)}</span><small>${escapeHtml(event.playerTeam)} · ${escapeHtml(event.matchTime || "")}</small><button data-edit-card="${escapeHtml(event.id)}" type="button">Edit</button></div>`;
           }
-          return `<div class="admin-goal-row"><span>⚽ #${escapeHtml(event.playerNumber)} ${escapeHtml(event.playerName)}${event.ownGoal ? " (OG)" : ""}</span><small>${escapeHtml(event.goalForTeam)} · ${escapeHtml(event.matchTime || "")}</small><button data-edit-goal="${escapeHtml(event.id)}" type="button">Edit</button></div>`;
+          const label = goalEventLabel(event);
+          return `<div class="admin-goal-row ${event.isShootout ? "admin-shootout-row" : ""}"><span>⚽ #${escapeHtml(event.playerNumber)} ${escapeHtml(event.playerName)} ${label ? `<em>${escapeHtml(label)}</em>` : ""}</span><small>${escapeHtml(event.isShootout ? "Penalty shootout" : event.goalForTeam)} · ${escapeHtml(event.matchTime || "")}</small><button data-edit-goal="${escapeHtml(event.id)}" type="button">Edit</button></div>`;
         }).join("")
       : `<p>No events added yet. Tap + for goals, or use Yellow/Red Card buttons.</p>`}
   `;
