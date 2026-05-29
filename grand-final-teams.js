@@ -1,4 +1,5 @@
 function grandFinalTeams() {
+  if (typeof window.goalDiggersFinalists !== "undefined" && window.goalDiggersFinalists?.home && window.goalDiggersFinalists?.away) return window.goalDiggersFinalists;
   if (typeof table !== "function") return null;
   const rows = table();
   if (!rows || rows.length < 2) return null;
@@ -55,13 +56,14 @@ function applyGrandFinalTeams() {
   const nextTitle = document.getElementById("nextMatchTitle");
   const nextMeta = document.getElementById("nextMatchMeta");
   const finalPhase = typeof phase === "function" ? phase(22) : "upcoming";
-  const isFinalPending = finalPhase !== "fulltime";
 
-  if (nextTitle && nextMeta && isFinalPending) {
+  // Only control the Next Match card before the final starts.
+  // Once the final is live, public-final-teams.js owns that card so it does not flicker.
+  if (nextTitle && nextMeta && finalPhase === "upcoming") {
     const currentNext = typeof nextUnplayed === "function" ? nextUnplayed() : null;
-    if (!currentNext || currentNext.isFinal || currentNext.id === 22) {
+    if (!currentNext || currentNext.isFinal || Number(currentNext.id) === 22) {
       renderNextMatchVisual(nextTitle, finalists.home, finalists.away);
-      nextMeta.textContent = "Grand Final • After league stage";
+      nextMeta.textContent = "20:10 • Grand Final";
     }
   }
 }
