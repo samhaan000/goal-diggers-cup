@@ -104,12 +104,26 @@
     return finalMatch;
   }
 
+  function nextMatchCard() {
+    const title = document.getElementById("nextMatchTitle");
+    return title ? title.closest("article") : null;
+  }
+
+  function hideNextMatchCard(hidden) {
+    const card = nextMatchCard();
+    if (!card) return;
+    card.hidden = hidden;
+    card.style.display = hidden ? "none" : "";
+  }
+
   function updateLiveFinalBoard() {
     const finalMatch = applyPublicFinalists();
     if (!finalMatch) return;
     const st = readJson(STATE_KEY, {});
     const finalPhase = phaseOf(FINAL_ID);
     const isCurrentFinal = String(st.currentMatchId) === String(FINAL_ID) && FINAL_ACTIVE_PHASES.includes(finalPhase);
+
+    hideNextMatchCard(isCurrentFinal);
     if (!isCurrentFinal) return;
 
     const homeName = document.getElementById("liveHomeName");
@@ -118,8 +132,6 @@
     const awayImg = document.getElementById("liveAwayLogo");
     const meta = document.getElementById("currentMatchMeta");
     const title = document.getElementById("currentMatchTitle");
-    const nextTitle = document.getElementById("nextMatchTitle");
-    const nextMeta = document.getElementById("nextMatchMeta");
 
     if (homeName) homeName.textContent = finalMatch.home;
     if (awayName) awayName.textContent = finalMatch.away;
@@ -133,13 +145,6 @@
     }
     if (meta && typeof phaseTimer === "function") meta.textContent = phaseTimer(FINAL_ID);
     if (title) title.textContent = `${finalMatch.home} vs ${finalMatch.away}`;
-
-    if (nextTitle && nextMeta) {
-      nextTitle.classList.add("next-match-rich");
-      if (typeof renderNextMatchVisual === "function") renderNextMatchVisual(nextTitle, finalMatch.home, finalMatch.away);
-      else nextTitle.textContent = `${finalMatch.home} vs ${finalMatch.away}`;
-      nextMeta.textContent = "20:10 • Grand Final";
-    }
   }
 
   const oldRenderLiveBoard = window.renderLiveBoard || (typeof renderLiveBoard === "function" ? renderLiveBoard : null);
