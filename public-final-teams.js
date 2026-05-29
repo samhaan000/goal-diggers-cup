@@ -74,6 +74,9 @@
   }
 
   function finalists() {
+    const existing = window.goalDiggersFinalists;
+    if (existing?.home && existing?.away && !/^\d/.test(existing.home) && !/^\d/.test(existing.away)) return existing;
+
     try {
       if (typeof table === "function") {
         const rows = table();
@@ -132,9 +135,10 @@
     if (title) title.textContent = `${finalMatch.home} vs ${finalMatch.away}`;
 
     if (nextTitle && nextMeta) {
-      nextTitle.classList.remove("next-match-rich");
-      nextTitle.textContent = "Grand Final Live Now";
-      nextMeta.textContent = `${finalMatch.home} vs ${finalMatch.away}`;
+      nextTitle.classList.add("next-match-rich");
+      if (typeof renderNextMatchVisual === "function") renderNextMatchVisual(nextTitle, finalMatch.home, finalMatch.away);
+      else nextTitle.textContent = `${finalMatch.home} vs ${finalMatch.away}`;
+      nextMeta.textContent = "20:10 • Grand Final";
     }
   }
 
